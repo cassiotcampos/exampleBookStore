@@ -2,18 +2,20 @@ package com.br.cassio.cassiobookstore
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
+import android.support.v4.view.ViewCompat
 import android.support.v4.widget.NestedScrollView
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.OvershootInterpolator
+import android.widget.LinearLayout
 import android.widget.TextView
-
 import com.br.cassio.cassiobookstore.dummy.DummyContent
+
 
 /**
  * An activity representing a list of Pings. This activity
@@ -30,6 +32,10 @@ class ItemListActivity : AppCompatActivity() {
      * device.
      */
     private var twoPane: Boolean = false
+    private lateinit var fabArrowLeft : FloatingActionButton
+    private lateinit var vDivider : View
+    private lateinit var rvBooks : RecyclerView
+    private lateinit var vContainerBooks : LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,29 +45,46 @@ class ItemListActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         toolbar.title = title
 
-        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
+
+        rvBooks = findViewById(R.id.item_list)
+
 
         if (findViewById<NestedScrollView>(R.id.item_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
+            fabArrowLeft = findViewById(R.id.fab)
+            vContainerBooks = findViewById(R.id.item_list_container)
+            fabArrowLeft = findViewById<FloatingActionButton>(R.id.fab);
+            vDivider = findViewById<View>(R.id.my_divider)
             twoPane = true
+
+            fabArrowLeft.setOnClickListener {
+                if(vContainerBooks.visibility == View.GONE && twoPane){
+                    vContainerBooks.visibility = View.VISIBLE
+                    rotateFab(0f)
+                }else if(twoPane){
+                    vContainerBooks.visibility = View.GONE
+                    rotateFab(180f)
+                }
+            }
         }
 
         setupRecyclerView(findViewById(R.id.item_list))
+    }
+
+    private fun rotateFab(rotation: Float) {
+        val interpolator = OvershootInterpolator()
+        ViewCompat.animate(fabArrowLeft).rotation(rotation).withLayer().setDuration(300)
+            .setInterpolator(interpolator).start()
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
         recyclerView.adapter = SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, twoPane)
     }
 
-    class SimpleItemRecyclerViewAdapter(private val parentActivity: ItemListActivity,
-                                        private val values: List<DummyContent.DummyItem>,
-                                        private val twoPane: Boolean) :
+    class SimpleItemRecyclerViewAdapter(
+        private val parentActivity: ItemListActivity,
+        private val values: List<DummyContent.DummyItem>,
+        private val twoPane: Boolean
+    ) :
             RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>() {
 
         private val onClickListener: View.OnClickListener

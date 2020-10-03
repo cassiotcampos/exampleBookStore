@@ -5,6 +5,6 @@
     style="?android:attr/textAppearanceLarge"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:layout_marginLeft="@dimen/margin_left_only_landscape"
     android:textIsSelectable="true"
     tools:context=".ItemDetailFragment" />
