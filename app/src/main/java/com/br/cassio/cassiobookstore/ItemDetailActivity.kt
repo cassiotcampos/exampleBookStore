@@ -2,10 +2,8 @@ package com.br.cassio.cassiobookstore
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 
 /**
  * An activity representing a single Item detail screen. This

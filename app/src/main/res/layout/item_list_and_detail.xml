@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:background="@color/my_background"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:padding="0dp"
+            tools:context=".ItemListActivity">
+
+            <LinearLayout
+                android:id="@+id/item_list_container"
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/white_gray"
+                    android:padding="0dp">
+                    <!--app:cardBackgroundColor="@android:color/background_light"
+                    app:cardCornerRadius="@dimen/cardCornerRadius"
+                    app:cardUseCompatPadding="true"
+                    app:elevation="4dp"-->
+                    >
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/item_list"
+                        android:name="com.br.cassio.cassiobookstore.ItemListFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/white_gray"
+                        app:layoutManager="LinearLayoutManager"
+                        tools:context="com.br.cassio.cassiobookstore.ItemListActivity"
+                        tools:listitem="@layout/item_list_content" />
+
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/my_divider"
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/my_background"
+                android:src="@android:drawable/arrow_down_float">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_arrows_left" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/item_detail_container"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:padding="0dp" />
+
+
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="@dimen/mFabArrowSize"
+            android:layout_height="@dimen/mFabArrowSize"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="-33dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_arrows_left"
+            app:backgroundTint="@color/white"
+            app:fabCustomSize="@dimen/mFabArrowSize"
+            app:layout_anchor="@id/my_divider"
+            app:layout_anchorGravity="center"
+            app:maxImageSize="14dp"
+            app:rippleColor="@color/colorAccent" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</merge>
