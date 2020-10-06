@@ -6,6 +6,6 @@
     android:name="com.br.cassio.cassiobookstore.ItemListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layoutManager="LinearLayoutManager"
+    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
     tools:context=".ItemListActivity"
     tools:listitem="@layout/item_list_content" />

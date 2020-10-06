@@ -11,7 +11,8 @@ interface ApiInterface {
     fun getBooks(
         @Query("q") query: String,
         @Query("maxResults") maxResults: Int,
-        @Query("startIndex") startIndex: Int?
+        @Query("startIndex") startIndex: Int,
+        @Query("fields") fields : String
 
     ): Call<Books>
 

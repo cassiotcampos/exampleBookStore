@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.cassio.cassiobookstore.model.generated.java.Item
 import com.google.android.material.appbar.CollapsingToolbarLayout
@@ -33,7 +32,7 @@ class ItemDetailFragment : Fragment() {
 
         // Show the dummy content as text in a TextView.
         bookMaster.let {
-            rootView.findViewById<TextView>(R.id.item_detail).text = it.volumeInfo.description
+            //rootView.findViewById<TextView>(R.id.item_detail).text = it.volumeInfo.description
         }
 
         return rootView
@@ -42,4 +41,5 @@ class ItemDetailFragment : Fragment() {
     companion object {
         const val ARG_BOOK = "book"
     }
+
 }

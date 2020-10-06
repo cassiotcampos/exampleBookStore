@@ -1,12 +1,9 @@
 
 package com.cassio.cassiobookstore.model.generated.java;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Item {
-
-    public transient boolean isSelected = false;
 
     @SerializedName("kind")
 

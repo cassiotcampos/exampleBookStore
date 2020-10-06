@@ -17,10 +17,11 @@ public final class BooksApi {
 
   public static final String BASE_URL = "https://www.googleapis.com/books/v1/";
 
+  public static final String FIELDS = "kind,items(volumeInfo/title,volumeInfo/authors,volumeInfo/publisher,volumeInfo/publishedDate,volumeInfo/description,volumeInfo/imageLinks(smallThumbnail))";
+
   public static final Gson GSON = new GsonBuilder()
       .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SS'Z'")
       .create();
-  private static final int RESULTS = 20;
 
   private ApiInterface api;
 
@@ -42,7 +43,7 @@ public final class BooksApi {
    * Get list of users in page passed as parameter
    */
   public void getBooks(String q, int maxResults, Integer startIndex, Callback<Books> callback) {
-    Call<Books> userResponsePage = api.getBooks(q, maxResults, startIndex);
+    Call<Books> userResponsePage = api.getBooks(q, maxResults, startIndex, FIELDS);
     userResponsePage.enqueue(callback);
   }
 

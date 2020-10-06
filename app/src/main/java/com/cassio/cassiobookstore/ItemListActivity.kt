@@ -22,7 +22,7 @@ import retrofit2.Response
 class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedListener {
 
     private lateinit var booksResult: Books
-    private val maxResults = 10
+    private val maxResults = 40
 
     private var twoPane: Boolean = false
     private lateinit var fabArrowLeft: FloatingActionButton
@@ -46,8 +46,8 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
         if (findViewById<NestedScrollView>(R.id.item_detail_container) != null) {
             fabArrowLeft = findViewById(R.id.fab)
             vContainerBooks = findViewById(R.id.item_list_container)
-            fabArrowLeft = findViewById<FloatingActionButton>(R.id.fab);
-            vDivider = findViewById<View>(R.id.my_divider)
+            fabArrowLeft = findViewById(R.id.fab);
+            vDivider = findViewById(R.id.my_divider)
             twoPane = true
 
             fabArrowLeft.setOnClickListener {
@@ -66,17 +66,17 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
 
     private fun rotateFab(rotation: Float) {
         val interpolator = OvershootInterpolator()
-        ViewCompat.animate(fabArrowLeft).rotation(rotation).withLayer().setDuration(300)
-            .setInterpolator(interpolator).start()
+        ViewCompat.animate(fabArrowLeft).rotation(rotation).setDuration(500)
+            .setInterpolator(interpolator).setStartDelay(500).start()
     }
 
     private fun setupRecyclerView(tempResult: Books) {
         booksResult = tempResult
 
         rvBooks.apply {
-            this.setHasFixedSize(true)
             rvBooks.layoutManager = GridLayoutManager(this@ItemListActivity, 2)
-            adapter = ListItemAdapter(this@ItemListActivity, booksResult, twoPane, this@ItemListActivity)
+            rvBooks.adapter =
+                ListItemAdapter(this@ItemListActivity, booksResult, twoPane, this@ItemListActivity)
         }
     }
 
@@ -88,32 +88,23 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
                 maxResults,
                 apiIndex,
                 (object : Callback<Books> {
-                    override fun onResponse(
-                        call: Call<Books>?,
-                        response: Response<Books>?
-                    ) {
+                    override fun onResponse(call: Call<Books>?, response: Response<Books>?) {
 
                         if (response != null) {
-
                             val tempResult: Books = response.body()!!
                             if (tempResult.items != null) {
-
                                 if (apiIndex == 0) {
                                     setupRecyclerView(tempResult)
                                 } else {
-                                    booksResult.totalItems = tempResult.totalItems
-                                    booksResult.items.addAll(tempResult.items)
-                                    rvBooks.adapter?.notifyDataSetChanged()
+                                    val mAdapter = rvBooks.adapter as ListItemAdapter
+                                    mAdapter.addAll(ArrayList(tempResult.items))
                                 }
                                 apiIndex += maxResults
                             }
                         }
                     }
 
-                    override fun onFailure(
-                        call: Call<Books>?,
-                        t: Throwable?
-                    ) {
+                    override fun onFailure(call: Call<Books>?, t: Throwable?) {
                         throw t!!
                     }
                 })
@@ -124,3 +115,4 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
         loadFromApi()
     }
 }
+

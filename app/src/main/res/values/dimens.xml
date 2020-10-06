@@ -5,6 +5,6 @@
     <dimen name="item_width">200dp</dimen>
     <dimen name="text_margin">12dp</dimen>
     <dimen name="cardCornerRadius">0dp</dimen>
-    <dimen name="mFabArrowSize">46dp</dimen>
+    <dimen name="mFabArrowSize">40dp</dimen>
     <dimen name="margin_left_only_landscape">0dp</dimen>
 </resources>
