@@ -19,7 +19,7 @@
 
             <LinearLayout
                 android:id="@+id/item_list_container"
-                android:layout_width="280dp"
+                android:layout_width="350dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
@@ -27,7 +27,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:background="@color/white_gray"
+                    android:background="@color/white"
                     android:padding="0dp">
                     <!--app:cardBackgroundColor="@android:color/background_light"
                     app:cardCornerRadius="@dimen/cardCornerRadius"
@@ -42,6 +42,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@color/white_gray"
+                        android:layout_marginLeft="1dp"
+                        android:layout_marginRight="1dp"
                         app:layoutManager="LinearLayoutManager"
                         tools:context="com.br.cassio.cassiobookstore.ItemListActivity"
                         tools:listitem="@layout/item_list_content" />
@@ -86,12 +88,11 @@
             android:clickable="true"
             android:focusable="true"
             android:src="@drawable/ic_arrows_left"
-            app:backgroundTint="@color/white"
+            app:backgroundTint="@color/gray"
             app:fabCustomSize="@dimen/mFabArrowSize"
             app:layout_anchor="@id/my_divider"
             app:layout_anchorGravity="center"
-            app:maxImageSize="14dp"
-            app:rippleColor="@color/colorAccent" />
+            app:maxImageSize="14dp" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </merge>

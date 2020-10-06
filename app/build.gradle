@@ -7,19 +7,19 @@ android {
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.br.cassio.cassiobookstore"
+        applicationId defaultApplicationId
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-
+        multiDexEnabled true
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
@@ -28,10 +28,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
-        staging {
+        /*staging {
             initWith(buildTypes.debug) // keep versionName and PIN from 'debug'
             defaultConfig.minSdkVersion 21
-        }
+        }*/
     }
 
     compileOptions {
@@ -58,6 +58,10 @@ dependencies {
     // images
     implementation 'com.squareup.picasso:picasso:2.71828'
 
+    // imageblur
+    implementation 'jp.wasabeef:picasso-transformations:2.2.1'
+
+
 
     // tests
     testImplementation 'junit:junit:4.13'
@@ -76,4 +80,5 @@ dependencies {
         force = true //API 19 support
     }
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
+    implementation 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
 }

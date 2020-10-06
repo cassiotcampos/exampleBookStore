@@ -9,10 +9,12 @@
     android:padding="16dp"
     android:id="@+id/item_detail"
     style="?android:attr/textAppearanceLarge"
+    android:textSize="15sp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginLeft="@dimen/margin_left_only_landscape"
-    android:lineSpacingMultiplier="1.4"
+    android:letterSpacing="-0.05"
+    android:lineSpacingMultiplier=".95"
     android:textIsSelectable="true"
     tools:context=".ItemDetailFragment" />
 
