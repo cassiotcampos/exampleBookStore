@@ -2,20 +2,22 @@ package com.br.cassio.cassiobookstore.adapter
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.br.cassio.cassiobookstore.ItemDetailActivity
 import com.br.cassio.cassiobookstore.ItemDetailFragment
 import com.br.cassio.cassiobookstore.ItemListActivity
 import com.br.cassio.cassiobookstore.R
-import com.br.cassio.cassiobookstore.dummy.DummyContent
+import com.br.cassio.cassiobookstore.model.generated.java.Books
+import com.br.cassio.cassiobookstore.model.generated.java.Item
+import com.google.gson.Gson
 
 class SimpleItemRecyclerViewAdapter(
     private val parentActivity: ItemListActivity,
-    private val values: List<DummyContent.DummyItem>,
+    private val values: Books,
     private val twoPane: Boolean
 ) : RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>() {
 
@@ -23,11 +25,11 @@ class SimpleItemRecyclerViewAdapter(
 
     init {
         onClickListener = View.OnClickListener { v ->
-            val item = v.tag as DummyContent.DummyItem
+            val item = v.tag as Item
             if (twoPane) {
                 val fragment = ItemDetailFragment().apply {
                     arguments = Bundle().apply {
-                        putString(ItemDetailFragment.ARG_ITEM_ID, item.id)
+                        putString(ItemDetailFragment.ARG_BOOK, Gson().toJson(item))
                     }
                 }
                 parentActivity.supportFragmentManager
@@ -36,7 +38,7 @@ class SimpleItemRecyclerViewAdapter(
                     .commit()
             } else {
                 val intent = Intent(v.context, ItemDetailActivity::class.java).apply {
-                    putExtra(ItemDetailFragment.ARG_ITEM_ID, item.id)
+                    putExtra(ItemDetailFragment.ARG_BOOK, Gson().toJson(item))
                 }
                 v.context.startActivity(intent)
             }
@@ -50,17 +52,17 @@ class SimpleItemRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = values[position]
-        holder.idView.text = item.id
-        holder.contentView.text = item.content
+        val item = values.items[position]
+        holder.idView.text = item.volumeInfo.title
+        // holder.contentView.text = item.volumeInfo.description
 
         with(holder.itemView) {
-            tag = item
+            tag = item as Item
             setOnClickListener(onClickListener)
         }
     }
 
-    override fun getItemCount() = values.size
+    override fun getItemCount() = values.items.size
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val idView: TextView = view.findViewById(R.id.id_text)

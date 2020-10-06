@@ -1,4 +1,4 @@
-package com.br.cassio.cassiobookstore.dummy
+package com.br.cassio.cassiobookstore.mock
 
 import java.util.ArrayList
 import java.util.HashMap

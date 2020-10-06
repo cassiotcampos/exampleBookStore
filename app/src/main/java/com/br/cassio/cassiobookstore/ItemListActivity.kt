@@ -1,42 +1,33 @@
 package com.br.cassio.cassiobookstore
 
-import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import androidx.core.view.ViewCompat
-import androidx.core.widget.NestedScrollView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.Toolbar
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.OvershootInterpolator
 import android.widget.LinearLayout
-import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.ViewCompat
+import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.br.cassio.cassiobookstore.adapter.SimpleItemRecyclerViewAdapter
-import com.br.cassio.cassiobookstore.dummy.DummyContent
+import com.br.cassio.cassiobookstore.model.generated.java.Books
+import com.br.cassio.cassiobookstore.repository.retrofit.bookapi.BooksApi
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-
-/**
- * An activity representing a list of Pings. This activity
- * has different presentations for handset and tablet-size devices. On
- * handsets, the activity presents a list of items, which when touched,
- * lead to a [ItemDetailActivity] representing
- * item details. On tablets, the activity presents the list of items and
- * item details side-by-side using two vertical panes.
- */
 class ItemListActivity : AppCompatActivity() {
 
-    /**
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-     * device.
-     */
     private var twoPane: Boolean = false
-    private lateinit var fabArrowLeft : FloatingActionButton
-    private lateinit var vDivider : View
-    private lateinit var rvBooks : RecyclerView
-    private lateinit var vContainerBooks : LinearLayout
+    private lateinit var fabArrowLeft: FloatingActionButton
+    private lateinit var vDivider: View
+    private lateinit var rvBooks: RecyclerView
+    private lateinit var vContainerBooks: LinearLayout
+
+    private lateinit var linearLayoutManager: LinearLayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,9 +37,7 @@ class ItemListActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         toolbar.title = title
 
-
         rvBooks = findViewById(R.id.item_list)
-
 
         if (findViewById<NestedScrollView>(R.id.item_detail_container) != null) {
             fabArrowLeft = findViewById(R.id.fab)
@@ -58,17 +47,17 @@ class ItemListActivity : AppCompatActivity() {
             twoPane = true
 
             fabArrowLeft.setOnClickListener {
-                if(vContainerBooks.visibility == View.GONE && twoPane){
+                if (vContainerBooks.visibility == View.GONE && twoPane) {
                     vContainerBooks.visibility = View.VISIBLE
                     rotateFab(0f)
-                }else if(twoPane){
+                } else if (twoPane) {
                     vContainerBooks.visibility = View.GONE
                     rotateFab(180f)
                 }
             }
         }
 
-        setupRecyclerView(findViewById(R.id.item_list))
+        loadFromApi()
     }
 
     private fun rotateFab(rotation: Float) {
@@ -77,7 +66,36 @@ class ItemListActivity : AppCompatActivity() {
             .setInterpolator(interpolator).start()
     }
 
-    private fun setupRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.adapter = SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, twoPane)
+    private fun setupRecyclerView(booksResult : Books) {
+        rvBooks.adapter = SimpleItemRecyclerViewAdapter(this, booksResult, twoPane)
+    }
+
+    private fun loadFromApi() {
+
+        BooksApi.getInstance()
+            .getBooks("android",
+                20,
+                null,
+                (object : Callback<Books> {
+                    override fun onResponse(
+                        call: Call<Books>?,
+                        response: Response<Books>?) {
+
+                        if (response != null) {
+                            val booksResult = response.body()!!
+                            setupRecyclerView(booksResult)
+                        }
+
+                    }
+
+                    override fun onFailure(
+                        call: Call<Books>?,
+                        t: Throwable?
+                    ) {
+                        Log.d("testando", t?.message.toString())
+                        throw t!!
+                        // TODO implementation of failure cases
+                    }
+                }))
     }
 }
