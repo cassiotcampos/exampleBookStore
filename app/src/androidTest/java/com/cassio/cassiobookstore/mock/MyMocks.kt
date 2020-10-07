@@ -14,7 +14,7 @@ public const val MY_MOCKS_BOOKS_LIST: String = "{\n" +
         "      \"etag\":\"+qqeZJvUJ70\",\n" +
         "      \"selfLink\":\"https://www.googleapis.com/books/v1/volumes/qKFDDAAAQBAJ\",\n" +
         "      \"volumeInfo\":{\n" +
-        "        \"title\":\"Android\",\n" +
+        "        \"title\":\"Android Best Title Ever\",\n" +
         "        \"authors\":[\n" +
         "          \"P.K. Dixit\"\n" +
         "        ],\n" +

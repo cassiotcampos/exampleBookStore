@@ -3,7 +3,6 @@ package com.cassio.cassiobookstore.view.adapter
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +27,6 @@ import com.cassio.cassiobookstore.view.ItemDetailFragment
 import com.cassio.cassiobookstore.view.ItemListActivity
 import com.cassio.cassiobookstore.view.adapter.ListItemAdapter.BookViewHolder
 import com.google.gson.Gson
-import jp.wasabeef.blurry.Blurry
 
 class ListItemAdapter(
     val parentActivity: ItemListActivity,
@@ -109,36 +107,25 @@ class ListItemAdapter(
             } ?: loadDefaultsImg()
         }
 
-        private fun loadFromUrl(url : String) {
+        private fun loadFromUrl(url: String) {
             val myOptions = RequestOptions()
-                .priority(Priority.HIGH)
+                .priority(Priority.LOW)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-
-            Glide.with(parentActivity)
-                .load(Uri.parse(url))
-                .apply(myOptions)
-                .into(imgmini)
 
             Glide.with(parentActivity)
                 .asBitmap()
                 .load(url)
+                .apply(myOptions)
                 .into(object : SimpleTarget<Bitmap?>() {
 
-
+                    @UiThread
                     override fun onResourceReady(
                         resource: Bitmap,
                         transition: Transition<in Bitmap?>?
                     ) {
-                        // como e async as vezes a activity nao esta nula na primeira verificacao mas esta nula aqui
                         if (parentActivity != null) {
-                            Blurry.with(parentActivity)
-                                .radius(20)
-                                .color(
-                                    parentActivity.getResources()
-                                        .getColor(R.color.colorPrimaryTransparent)
-                                )
-                                .from(resource)
-                                .into(imgbg)
+                            imgmini.setImageBitmap(resource)
+                            imgbg.setImageBitmap(Bitmap.createScaledBitmap(resource, 3, 3, true))
                         }
                     }
                 })

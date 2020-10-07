@@ -13,6 +13,8 @@ import com.br.cassio.cassiobookstore.mock.MY_MOCKS_BOOKS_LIST
 import com.br.cassio.cassiobookstore.mock.mockApiCallAfter
 import com.br.cassio.cassiobookstore.mock.mockApiCallBefore
 import com.br.cassio.cassiobookstore.mock.mockApiCallEnqueue
+import com.cassio.cassiobookstore.R
+import com.cassio.cassiobookstore.view.ItemListActivity
 import org.hamcrest.core.StringContains.containsString
 import org.junit.After
 import org.junit.Before
@@ -52,11 +54,13 @@ class ClickMasterDetailTest {
     fun masterDetailSimpleTest() {
 
         if (USE_MOCK_DATA) {
-            mockApiCallEnqueue(MY_MOCKS_BOOKS_LIST, 5)
+            mockApiCallEnqueue(MY_MOCKS_BOOKS_LIST, 0)
             itemListRule.launchActivity(Intent())
         }
 
-        onView(withText("Android")).perform(click())
+        Thread.sleep(2000)
+
+        onView(withText("Android Best Title Ever")).perform(click())
 
         onView(withId(R.id.item_detail))
             .check(matches(withText(containsString("Android is a movement that has transferred data from laptop to hand-held devices like mobiles."))))

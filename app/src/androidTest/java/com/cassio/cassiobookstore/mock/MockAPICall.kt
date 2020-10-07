@@ -1,8 +1,9 @@
 package com.br.cassio.cassiobookstore.mock
 
 
-import com.br.cassio.cassiobookstore.repository.retrofit.bookapi.ApiInterface
-import com.br.cassio.cassiobookstore.repository.retrofit.bookapi.BooksApi
+
+import com.cassio.cassiobookstore.repository.ApiInterface
+import com.cassio.cassiobookstore.repository.BooksApi
 import net.vidageek.mirror.dsl.Mirror
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

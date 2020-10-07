@@ -18,6 +18,10 @@
         android:background="@color/colorPrimary"
         android:scaleType="centerCrop" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryTransparent" />
 
     <LinearLayout
         android:id="@+id/container_book_button"
@@ -41,8 +45,9 @@
 
             <ImageView
                 android:id="@+id/imgmini"
-                android:layout_width="60dp"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
+                android:minHeight="60dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="0dp"
                 android:maxHeight="75dp"
@@ -68,15 +73,18 @@
                 android:letterSpacing="-0.05"
                 android:lineSpacingMultiplier=".95"
                 android:maxLines="3"
+                android:ellipsize="end"
                 android:paddingLeft="6dp"
                 android:paddingTop="4dp"
                 android:paddingRight="6dp"
                 android:paddingBottom="4dp"
-                android:text="Testandoaso asdasdasd asdasdad"
+                android:text="Testandoaso asdasdasd asdasdad "
                 android:textColor="@color/white"
                 android:textSize="15sp" />
 
         </LinearLayout>
+
+
 
     </LinearLayout>
 
