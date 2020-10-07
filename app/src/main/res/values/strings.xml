@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Cassio Bookstore</string>
     <string name="title_item_detail">Item Detail</string>
+    <string name="autores">Autor(es):</string>
+    <string name="titulo">Título:</string>
+    <string name="buy_link">"Buy link: "</string>
 </resources>

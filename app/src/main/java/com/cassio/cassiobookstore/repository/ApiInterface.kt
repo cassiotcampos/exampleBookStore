@@ -1,6 +1,6 @@
-package com.cassio.cassiobookstore.repository.retrofit.bookapi
+package com.cassio.cassiobookstore.repository
 
-import com.cassio.cassiobookstore.model.generated.java.Books
+import com.cassio.cassiobookstore.model.Books
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

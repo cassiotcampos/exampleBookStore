@@ -1,8 +1,8 @@
-package com.cassio.cassiobookstore.repository.retrofit.bookapi;
+package com.cassio.cassiobookstore.repository;
 
 
 import com.cassio.cassiobookstore.BuildConfig;
-import com.cassio.cassiobookstore.model.generated.java.Books;
+import com.cassio.cassiobookstore.model.Books;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -17,7 +17,7 @@ public final class BooksApi {
 
   public static final String BASE_URL = "https://www.googleapis.com/books/v1/";
 
-  public static final String FIELDS = "kind,items(volumeInfo/title,volumeInfo/authors,volumeInfo/publisher,volumeInfo/publishedDate,volumeInfo/description,volumeInfo/imageLinks(smallThumbnail))";
+  public static final String FIELDS = "kind,items(volumeInfo/title,volumeInfo/authors,volumeInfo/publisher,volumeInfo/publishedDate,volumeInfo/description,volumeInfo/imageLinks(smallThumbnail)searchInfo(textSnippet),saleInfo/buyLink)";
 
   public static final Gson GSON = new GsonBuilder()
       .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SS'Z'")
@@ -50,7 +50,7 @@ public final class BooksApi {
   private BooksApi() {
     HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
     interceptor.setLevel(BuildConfig.DEBUG ?
-        HttpLoggingInterceptor.Level.NONE :
+        HttpLoggingInterceptor.Level.BODY :
         HttpLoggingInterceptor.Level.NONE);
     OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 

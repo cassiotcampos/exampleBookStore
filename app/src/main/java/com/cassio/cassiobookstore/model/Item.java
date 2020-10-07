@@ -1,25 +1,46 @@
 
-package com.cassio.cassiobookstore.model.generated.java;
+package com.cassio.cassiobookstore.model;
 
 import com.google.gson.annotations.SerializedName;
 
 public class Item {
 
     @SerializedName("kind")
-
     private String kind;
+
     @SerializedName("id")
-
     private String id;
+
     @SerializedName("etag")
-
     private String etag;
+
     @SerializedName("selfLink")
-
     private String selfLink;
-    @SerializedName("volumeInfo")
 
+    @SerializedName("volumeInfo")
     private VolumeInfo volumeInfo;
+
+    @SerializedName("searchInfo")
+    private SearchInfo searchInfo;
+
+    @SerializedName("saleInfo")
+    private SaleInfo saleInfo;
+
+    public SaleInfo getSaleInfo() {
+        return saleInfo;
+    }
+
+    public void setSaleInfo(SaleInfo saleInfo) {
+        this.saleInfo = saleInfo;
+    }
+
+    public SearchInfo getSearchInfo() {
+        return searchInfo;
+    }
+
+    public void setSearchInfo(SearchInfo searchInfo) {
+        this.searchInfo = searchInfo;
+    }
 
     public String getKind() {
         return kind;

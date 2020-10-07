@@ -1,4 +1,4 @@
-package com.cassio.cassiobookstore
+package com.cassio.cassiobookstore.view
 
 import android.os.Bundle
 import android.view.View
@@ -10,10 +10,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.cassio.cassiobookstore.adapter.ListItemAdapter
-import com.cassio.cassiobookstore.model.generated.java.Books
-import com.cassio.cassiobookstore.repository.retrofit.bookapi.BooksApi
+import com.cassio.cassiobookstore.R
+import com.cassio.cassiobookstore.view.adapter.ListItemAdapter
+import com.cassio.cassiobookstore.model.Books
+import com.cassio.cassiobookstore.repository.BooksApi
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -82,6 +84,8 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
 
     private fun loadFromApi() {
 
+
+
         BooksApi.getInstance()
             .getBooks(
                 "android",
@@ -105,7 +109,12 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
                     }
 
                     override fun onFailure(call: Call<Books>?, t: Throwable?) {
-                        throw t!!
+                        Snackbar.make(
+                            rvBooks, "Api error",
+                            Snackbar.LENGTH_LONG
+                        ).setAction("Try Again") {
+                            loadFromApi()
+                        }.show();
                     }
                 })
             )

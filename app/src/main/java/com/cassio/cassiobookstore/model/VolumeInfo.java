@@ -1,5 +1,5 @@
 
-package com.cassio.cassiobookstore.model.generated.java;
+package com.cassio.cassiobookstore.model;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -17,6 +17,16 @@ public class VolumeInfo {
     private String publishedDate;
     @SerializedName("imageLinks")
     private ImageLinks imageLinks;
+    @SerializedName("description")
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public String getTitle() {
         return title;

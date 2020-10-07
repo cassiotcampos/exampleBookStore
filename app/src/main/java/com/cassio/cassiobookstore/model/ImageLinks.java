@@ -1,5 +1,5 @@
 
-package com.cassio.cassiobookstore.model.generated.java;
+package com.cassio.cassiobookstore.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

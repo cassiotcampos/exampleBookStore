@@ -1,4 +1,4 @@
-package com.cassio.cassiobookstore.adapter
+package com.cassio.cassiobookstore.view.adapter
 
 
 import android.content.Intent
@@ -19,13 +19,14 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-import com.cassio.cassiobookstore.ItemDetailActivity
-import com.cassio.cassiobookstore.ItemDetailFragment
-import com.cassio.cassiobookstore.ItemListActivity
 import com.cassio.cassiobookstore.R
-import com.cassio.cassiobookstore.adapter.ListItemAdapter.BookViewHolder
-import com.cassio.cassiobookstore.model.generated.java.Books
-import com.cassio.cassiobookstore.model.generated.java.Item
+import com.cassio.cassiobookstore.model.Books
+import com.cassio.cassiobookstore.model.Item
+import com.cassio.cassiobookstore.model.VolumeInfo
+import com.cassio.cassiobookstore.view.ItemDetailActivity
+import com.cassio.cassiobookstore.view.ItemDetailFragment
+import com.cassio.cassiobookstore.view.ItemListActivity
+import com.cassio.cassiobookstore.view.adapter.ListItemAdapter.BookViewHolder
 import com.google.gson.Gson
 import jp.wasabeef.blurry.Blurry
 
@@ -53,7 +54,7 @@ class ListItemAdapter(
         val item = values.items[position]
 
 
-        item.volumeInfo?.imageLinks?.smallThumbnail?.let {
+        item.volumeInfo?.let {
             holder.updateWithUrl(it)
         }
 
@@ -102,51 +103,50 @@ class ListItemAdapter(
 
 
         @UiThread
-        fun updateWithUrl(url: String) {
+        fun updateWithUrl(volumeInfo: VolumeInfo) {
+            volumeInfo?.imageLinks?.smallThumbnail?.let { 
+                loadFromUrl(it)
+            } ?: loadDefaultsImg()
+        }
+
+        private fun loadFromUrl(url : String) {
+            val myOptions = RequestOptions()
+                .priority(Priority.HIGH)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+
+            Glide.with(parentActivity)
+                .load(Uri.parse(url))
+                .apply(myOptions)
+                .into(imgmini)
+
+            Glide.with(parentActivity)
+                .asBitmap()
+                .load(url)
+                .into(object : SimpleTarget<Bitmap?>() {
 
 
-            if (url.isNotBlank()) {
-
-                val myOptions = RequestOptions()
-                    .priority(Priority.HIGH)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-
-                Glide.with(parentActivity)
-                    .load(Uri.parse(url))
-                    .apply(myOptions)
-                    .into(imgmini)
-
-                /*Glide.with(parentActivity)  //2
-                    .load(Uri.parse(url)) //3
-                    .apply(myOptions)
-                    .apply(bitmapTransform(BlurTransformation(25, 60)))
-                    .centerCrop()
-                    .into(imgbg) //8*/
-
-                Glide.with(parentActivity)
-                    .asBitmap()
-                    .load(url)
-                    .into(object : SimpleTarget<Bitmap?>() {
-
-
-                        override fun onResourceReady(
-                            resource: Bitmap,
-                            transition: Transition<in Bitmap?>?
-                        ) {
-                            // como e async as vezes a activity nao esta nula na primeira verificacao mas esta nula aqui
-                            if (parentActivity != null) {
-                                Blurry.with(parentActivity)
-                                    .radius(20)
-                                    .color(
-                                        parentActivity.getResources()
-                                            .getColor(R.color.colorPrimaryTransparent)
-                                    )
-                                    .from(resource)
-                                    .into(imgbg)
-                            }
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap?>?
+                    ) {
+                        // como e async as vezes a activity nao esta nula na primeira verificacao mas esta nula aqui
+                        if (parentActivity != null) {
+                            Blurry.with(parentActivity)
+                                .radius(20)
+                                .color(
+                                    parentActivity.getResources()
+                                        .getColor(R.color.colorPrimaryTransparent)
+                                )
+                                .from(resource)
+                                .into(imgbg)
                         }
-                    })
-            }
+                    }
+                })
+        }
+
+        private fun loadDefaultsImg() {
+            imgbg.setImageDrawable(null)
+            imgmini.setImageDrawable(parentActivity.resources.getDrawable(R.drawable.ic_book_placeholder))
         }
     }
 

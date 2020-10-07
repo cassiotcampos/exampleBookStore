@@ -1,15 +1,20 @@
-package com.cassio.cassiobookstore
+package com.cassio.cassiobookstore.view
 
 
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.NestedScrollView
+import com.cassio.cassiobookstore.R
 
 class ItemDetailActivity : AppCompatActivity() {
+
+    lateinit var scroll: NestedScrollView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_item_detail)
+        scroll = findViewById(R.id.item_detail_container)
         setSupportActionBar(findViewById(R.id.detail_toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         if (savedInstanceState == null) {

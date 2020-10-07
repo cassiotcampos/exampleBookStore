@@ -41,7 +41,7 @@
 
             <ImageView
                 android:id="@+id/imgmini"
-                android:layout_width="40dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="0dp"
