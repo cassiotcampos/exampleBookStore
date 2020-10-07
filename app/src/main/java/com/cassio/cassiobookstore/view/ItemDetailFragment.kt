@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.text.HtmlCompat
@@ -15,14 +16,22 @@ import com.bumptech.glide.Priority
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.cassio.cassiobookstore.R
+import com.cassio.cassiobookstore.model.Books
 import com.cassio.cassiobookstore.model.Item
+import com.cassio.cassiobookstore.repository.loadFavsFromShared
+import com.cassio.cassiobookstore.repository.saveFavsIntoShared
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 
 class ItemDetailFragment : Fragment() {
 
+    private lateinit var myFavoriteBooks: Books
     private var bookStr: String? = null
     lateinit var bookMaster: Item
+    var isFavorite: Boolean = false
+
+    private lateinit var btnFav : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,16 +60,16 @@ class ItemDetailFragment : Fragment() {
         }
 
         // THUMB IMG
-            bookMaster.volumeInfo?.imageLinks?.smallThumbnail?.let {
-                val myOptions = RequestOptions()
-                    .priority(Priority.HIGH)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+        bookMaster.volumeInfo?.imageLinks?.smallThumbnail?.let {
+            val myOptions = RequestOptions()
+                .priority(Priority.HIGH)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
 
-                Glide.with(this)
-                    .load(Uri.parse(it))
-                    .apply(myOptions)
-                    .into(rootView.findViewById(R.id.img_book_detail))
-            }
+            Glide.with(this)
+                .load(Uri.parse(it))
+                .apply(myOptions)
+                .into(rootView.findViewById(R.id.img_book_detail))
+        }
 
         // AUTHORS
         if (!bookMaster.volumeInfo?.authors.isNullOrEmpty()) {
@@ -90,7 +99,8 @@ class ItemDetailFragment : Fragment() {
 
         // BUY LINK
         bookMaster.saleInfo?.buyLink?.let { itString ->
-            rootView.findViewById<LinearLayout>(R.id.container_book_buy_link).visibility = View.VISIBLE
+            rootView.findViewById<LinearLayout>(R.id.container_book_buy_link).visibility =
+                View.VISIBLE
             val myLink = HtmlCompat.fromHtml("<u>$itString</u>", HtmlCompat.FROM_HTML_MODE_LEGACY)
             rootView.findViewById<TextView>(R.id.detail_buylink).text = myLink
             rootView.findViewById<TextView>(R.id.detail_buylink).setOnClickListener {
@@ -99,7 +109,109 @@ class ItemDetailFragment : Fragment() {
                 startActivity(intent)
             }
         }
+
+
+        // FAVORITE
+        btnFav = rootView.findViewById<Button>(R.id.btn_adicionar_favorito)
+        myFavoriteBooks = loadFavsFromShared(context)
+        myFavoriteBooks?.items?.forEach meuLoop@{
+            if (bookMaster.id.equals(it.id)) {
+                changeFavBtn(true)
+                return@meuLoop
+            }
+        }
+
+        if (!isFavorite) {
+            changeFavBtn(false)
+        }
+
+        btnFav.setOnClickListener {
+            if (!isFavorite)
+                addToFavorites(rootView)
+            else
+                removeFavorite(rootView)
+        }
+
+
+
         return rootView
+    }
+
+    private fun changeFavBtn(isFav: Boolean) {
+        this.isFavorite = isFav
+        if (isFavorite) {
+            btnFav.text = activity?.getText(R.string.remove_favorite)
+            btnFav.setBackgroundColor(activity?.resources?.getColor(R.color.colorRed)!!)
+            btnFav.setTextColor(activity?.resources?.getColor(R.color.white)!!)
+        } else {
+            btnFav.text = activity?.getText(R.string.add_favorite)
+            btnFav.setBackgroundColor(activity?.resources?.getColor(R.color.gray)!!)
+            btnFav.setTextColor(activity?.resources?.getColor(R.color.colorRed)!!)
+        }
+    }
+
+    private fun removeFavorite(viewForSnackBar: View): Boolean {
+        myFavoriteBooks.items.forEach meuLoop@{
+            if (it.id.equals(bookMaster.id)) {
+                myFavoriteBooks.items.remove(it)
+                context?.let { itContext -> saveFavsIntoShared(itContext, myFavoriteBooks) }
+                mensagemRemovido(viewForSnackBar)
+                if(activity is ItemListActivity){
+                    (activity as ItemListActivity).favRemoved(bookMaster)
+                }
+                return true
+
+            }
+        }
+        return false
+    }
+
+    fun addToFavorites(viewForSnackBar: View): Boolean {
+        var myFavs = loadFavsFromShared(context)
+        // verifica se ja existe
+        myFavs?.items?.forEach() meuLoop@{
+            if (it.id.equals(bookMaster.id)) {
+                mensagemAdicionado(viewForSnackBar)
+                if(activity is ItemListActivity){
+                    (activity as ItemListActivity).favRemoved(bookMaster)
+                }
+                return true
+            }
+        }
+
+        myFavoriteBooks.items.add(bookMaster)
+        context?.let {
+            if (saveFavsIntoShared(it, myFavoriteBooks)) {
+                mensagemAdicionado(viewForSnackBar)
+                if(activity is ItemListActivity){
+                    (activity as ItemListActivity).favReAdded(bookMaster)
+                }
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun mensagemAdicionado(viewForSnackBar: View) {
+        changeFavBtn(true)
+        Snackbar.make(
+            viewForSnackBar,
+            getString(R.string.msg_fav_added),
+            Snackbar.LENGTH_LONG
+        ).setAction("DESFAZER") {
+            removeFavorite(viewForSnackBar)
+        }.show();
+    }
+
+    private fun mensagemRemovido(viewForSnackBar: View) {
+        changeFavBtn(false)
+        Snackbar.make(
+            viewForSnackBar,
+            getString(R.string.msg_removed_fav),
+            Snackbar.LENGTH_LONG
+        ).setAction("DESFAZER") {
+            addToFavorites(viewForSnackBar)
+        }.show();
     }
 
     companion object {

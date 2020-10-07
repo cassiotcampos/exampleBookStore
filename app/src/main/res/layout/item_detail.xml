@@ -42,7 +42,7 @@
                     android:minWidth="100dp"
                     android:minHeight="120dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_book_placeholder"
+                    android:src="@drawable/ic_livro"
                     android:textAppearance="?attr/textAppearanceListItem" />
             </androidx.cardview.widget.CardView>
 
@@ -117,11 +117,13 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/btn_adicionar_favorito"
+            android:textAllCaps="false"
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Adicionar favorito"
-            android:minWidth="300dp"/>
+            android:minWidth="220dp"/>
         <TextView
             android:id="@+id/item_detail"
             style="?android:attr/textAppearanceLarge"

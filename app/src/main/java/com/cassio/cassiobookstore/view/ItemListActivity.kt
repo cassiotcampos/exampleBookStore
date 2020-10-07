@@ -1,19 +1,25 @@
 package com.cassio.cassiobookstore.view
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.animation.OvershootInterpolator
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cassio.cassiobookstore.R
-import com.cassio.cassiobookstore.view.adapter.ListItemAdapter
 import com.cassio.cassiobookstore.model.Books
+import com.cassio.cassiobookstore.model.Item
 import com.cassio.cassiobookstore.repository.BooksApi
+import com.cassio.cassiobookstore.repository.loadFavsFromShared
+import com.cassio.cassiobookstore.view.adapter.ListItemAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import retrofit2.Call
@@ -22,6 +28,8 @@ import retrofit2.Response
 
 
 class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedListener {
+
+    private final val extraFavKey: String = "EXTRA_FAV"
 
     private lateinit var booksResult: Books
     private val maxResults = 40
@@ -34,13 +42,31 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
 
     private var apiIndex: Int = 0
 
+    val isFav: Boolean
+        get() {
+            return intent.getBooleanExtra(extraFavKey, false)
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_item_list)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        toolbar.title = title
+
+        if (isFav) {
+            toolbar.setBackgroundColor(resources.getColor(R.color.colorRed))
+            supportActionBar?.setHomeButtonEnabled(true);
+            supportActionBar?.setDisplayHomeAsUpEnabled(true);
+            supportActionBar?.title = resources.getString(R.string.my_favorites)
+            supportActionBar?.setIcon(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_action_fav,
+                    theme
+                )
+            )
+        }
 
         rvBooks = findViewById(R.id.item_list)
 
@@ -63,7 +89,30 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
             }
         }
 
-        loadFromApi()
+        if (!isFav) loadFromApi() else loadFromDisk()
+    }
+
+    private fun loadFromDisk() {
+        setupRecyclerView(loadFavsFromShared(this))
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.actions, menu)
+        if (!isFav) menu.findItem(R.id.action_favorite).isVisible = true
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.getItemId()
+        if (id == R.id.action_favorite) {
+            val intent = Intent(baseContext, ItemListActivity::class.java)
+            intent.putExtra(extraFavKey, true)
+            startActivity(intent)
+            return true
+        } else if (id == android.R.id.home) {
+            onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun rotateFab(rotation: Float) {
@@ -83,8 +132,6 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
     }
 
     private fun loadFromApi() {
-
-
 
         BooksApi.getInstance()
             .getBooks(
@@ -121,7 +168,18 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
     }
 
     override fun onLastItemLoaded() {
-        loadFromApi()
+        if (!isFav)
+            loadFromApi()
+    }
+
+    fun favRemoved(item: Item) {
+        if (isFav)
+            (rvBooks.adapter as ListItemAdapter).remove(item)
+    }
+
+    fun favReAdded(item: Item) {
+        if (isFav)
+            (rvBooks.adapter as ListItemAdapter).addAll(arrayListOf(item))
     }
 }
 

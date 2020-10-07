@@ -17,7 +17,7 @@ public final class BooksApi {
 
   public static final String BASE_URL = "https://www.googleapis.com/books/v1/";
 
-  public static final String FIELDS = "kind,items(volumeInfo/title,volumeInfo/authors,volumeInfo/publisher,volumeInfo/publishedDate,volumeInfo/description,volumeInfo/imageLinks(smallThumbnail)searchInfo(textSnippet),saleInfo/buyLink)";
+  public static final String FIELDS = "kind,items(id,volumeInfo/title,volumeInfo/authors,volumeInfo/publisher,volumeInfo/publishedDate,volumeInfo/description,volumeInfo/imageLinks(smallThumbnail)searchInfo(textSnippet),saleInfo/buyLink)";
 
   public static final Gson GSON = new GsonBuilder()
       .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SS'Z'")

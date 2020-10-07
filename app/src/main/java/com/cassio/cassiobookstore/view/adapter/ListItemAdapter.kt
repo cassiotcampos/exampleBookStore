@@ -93,6 +93,17 @@ class ListItemAdapter(
         }
     }
 
+    fun remove(mItem: Item) {
+        var positionToBeRemoved : Int = 0
+        for (i in 0..values.items.size - 1) {
+            if (values.items[i].id.equals(mItem.id)) {
+                positionToBeRemoved = i
+            }
+        }
+        values.items.removeAt(positionToBeRemoved);
+        notifyItemRemoved(positionToBeRemoved)
+    }
+
     inner class BookViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var title: TextView = view.findViewById(R.id.books_title)
         var imgmini: ImageView = view.findViewById(R.id.imgmini)
@@ -102,7 +113,7 @@ class ListItemAdapter(
 
         @UiThread
         fun updateWithUrl(volumeInfo: VolumeInfo) {
-            volumeInfo?.imageLinks?.smallThumbnail?.let { 
+            volumeInfo?.imageLinks?.smallThumbnail?.let {
                 loadFromUrl(it)
             } ?: loadDefaultsImg()
         }
@@ -133,7 +144,7 @@ class ListItemAdapter(
 
         private fun loadDefaultsImg() {
             imgbg.setImageDrawable(null)
-            imgmini.setImageDrawable(parentActivity.resources.getDrawable(R.drawable.ic_book_placeholder))
+            imgmini.setImageDrawable(parentActivity.resources.getDrawable(R.drawable.ic_livro))
         }
     }
 
