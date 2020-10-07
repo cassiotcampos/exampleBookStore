@@ -105,9 +105,19 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.getItemId()
         if (id == R.id.action_favorite) {
-            val intent = Intent(baseContext, ItemListActivity::class.java)
-            intent.putExtra(extraFavKey, true)
-            startActivity(intent)
+            if (loadFavsFromShared(this).items.size > 0) {
+                val intent = Intent(baseContext, ItemListActivity::class.java)
+                intent.putExtra(extraFavKey, true)
+                startActivity(intent)
+            }else {
+                Snackbar.make(
+                    rvBooks,
+                    getString(R.string.msg_no_favorites),
+                    Snackbar.LENGTH_LONG
+                ).setAction("OK") {
+
+                }.show();
+            }
             return true
         } else if (id == android.R.id.home) {
             onBackPressed()

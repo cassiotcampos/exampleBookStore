@@ -66,7 +66,7 @@ class ItemDetailFragment : Fragment() {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
 
             Glide.with(this)
-                .load(Uri.parse(it))
+                .load(Uri.parse(it.replace("http://", "https://")))
                 .apply(myOptions)
                 .into(rootView.findViewById(R.id.img_book_detail))
         }
@@ -105,7 +105,7 @@ class ItemDetailFragment : Fragment() {
             rootView.findViewById<TextView>(R.id.detail_buylink).text = myLink
             rootView.findViewById<TextView>(R.id.detail_buylink).setOnClickListener {
                 val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse(itString)
+                intent.data = Uri.parse(itString.replace("http://", "https://"))
                 startActivity(intent)
             }
         }

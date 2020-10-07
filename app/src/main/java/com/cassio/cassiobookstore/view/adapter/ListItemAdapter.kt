@@ -125,7 +125,7 @@ class ListItemAdapter(
 
             Glide.with(parentActivity)
                 .asBitmap()
-                .load(url)
+                .load(url.replace("http://", "https://"))
                 .apply(myOptions)
                 .into(object : SimpleTarget<Bitmap?>() {
 

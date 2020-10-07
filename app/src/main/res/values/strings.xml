@@ -11,4 +11,5 @@
     <string name="msg_removed_fav">Item removido da coleção.</string>
     <string name="action_favorite">Favoritos</string>
     <string name="my_favorites">Meus favoritos</string>
+    <string name="msg_no_favorites">Nenhum favorito na coleção. Por favor, adicione :)</string>
 </resources>
