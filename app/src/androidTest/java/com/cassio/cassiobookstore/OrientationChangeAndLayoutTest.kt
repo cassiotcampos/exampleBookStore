@@ -14,11 +14,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.UiDevice
-import com.br.cassio.cassiobookstore.mock.MY_MOCKS_BOOKS_LIST
-import com.br.cassio.cassiobookstore.mock.mockApiCallAfter
-import com.br.cassio.cassiobookstore.mock.mockApiCallBefore
-import com.br.cassio.cassiobookstore.mock.mockApiCallEnqueue
 import com.cassio.cassiobookstore.R
+import com.cassio.cassiobookstore.mock.MY_MOCKS_BOOKS_LIST
+import com.cassio.cassiobookstore.mock.mockApiCallAfter
+import com.cassio.cassiobookstore.mock.mockApiCallBefore
+import com.cassio.cassiobookstore.mock.mockApiCallEnqueue
 import com.cassio.cassiobookstore.view.ItemListActivity
 import org.junit.After
 import org.junit.Before
@@ -35,7 +35,7 @@ import org.junit.runner.RunWith
  * Funcionamento desejado do APP: SOMENTE Telemoveis/Handphones EM POSICAO retrato/portrait SEPARAM a LISTA dos DETALHES E
  * PARA OUTROS CASOS (tablets em qualquer posicao/orientacao) exibe AMBOS! A lista e os detalhes LADO A LADO!
  * --------------------------
- * [Para melhores testes (delay 0), DESATIVE os 3 efeitos de animacoes nas opcoes de desenvolvedor, de acordo com a documentacao oficial]
+ * [Para testes sem delay (delay 0), DESATIVE os 3 efeitos de animacoes nas opcoes de desenvolvedor, de acordo com a documentacao oficial]
  * (https://developer.android.com/training/testing/ui-testing/espresso-testing)
  * observacao: Em emuladores ou telemoveis rapidos NAO é necessario DESATIVAR
  * basta meter um tempo maior de delay entre as animacoes e mudancas de orientacao, layout, etc (1500 por exemplo)
@@ -44,7 +44,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class OrientationChangeAndLayoutTest {
 
-    private final val MILIS_DELAY: Long = 2000 // increase this for test with animation or slow devices (I recomend 2000)
+    private final val MILIS_DELAY: Long = 1500 // increase this for test with animation or slow devices (I recommend 1500)
     private final val USE_MOCK_DATA: Boolean = true // change this to test with API or MockData
 
     // makes orientation changes during the tests
@@ -71,7 +71,7 @@ class OrientationChangeAndLayoutTest {
     fun testOrientationChangesAtMainScreen() {
         
         if (USE_MOCK_DATA) {
-            mockApiCallEnqueue(MY_MOCKS_BOOKS_LIST, 100)
+            mockApiCallEnqueue(MY_MOCKS_BOOKS_LIST, 50)
             itemListRule.launchActivity(Intent())
         }
 

@@ -9,11 +9,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import com.br.cassio.cassiobookstore.mock.MY_MOCKS_BOOKS_LIST
-import com.br.cassio.cassiobookstore.mock.mockApiCallAfter
-import com.br.cassio.cassiobookstore.mock.mockApiCallBefore
-import com.br.cassio.cassiobookstore.mock.mockApiCallEnqueue
 import com.cassio.cassiobookstore.R
+import com.cassio.cassiobookstore.mock.MY_MOCKS_BOOKS_LIST
+import com.cassio.cassiobookstore.mock.mockApiCallAfter
+import com.cassio.cassiobookstore.mock.mockApiCallBefore
+import com.cassio.cassiobookstore.mock.mockApiCallEnqueue
 import com.cassio.cassiobookstore.view.ItemListActivity
 import org.hamcrest.core.StringContains.containsString
 import org.junit.After

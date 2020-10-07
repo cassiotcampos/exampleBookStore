@@ -1,4 +1,4 @@
-package com.br.cassio.cassiobookstore.mock
+package com.cassio.cassiobookstore.mock
 
 
 /**
