@@ -30,7 +30,7 @@ Rest API: https://developers.google.com/books/docs/v1/getting_started#REST
 
   - [x] The app shows both, a thumbnail and the title 
   
-  - [x] Currently using filtered request to minimize bandwidth consumption (https://developers.google.com/books/docs/v1/using#filtering)
+  - [x] Currently using "fields" to minimize bandwidth consumption (https://developers.google.com/books/docs/v1/performance)
   
     ```JAVA
     public static final String FIELDS = "kind,items(id,volumeInfo/title,volumeInfo/authors,volumeInfo/publisher,volumeInfo/publishedDate,volumeInfo/description,volumeInfo/imageLinks(smallThumbnail)searchInfo(textSnippet),saleInfo/buyLink)";
