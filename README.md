@@ -15,23 +15,15 @@ Rest API: https://developers.google.com/books/docs/v1/getting_started#REST
   - [x] UI Tests with espresso. androidTest uses Mocked API throught MockWebServer and Mirror. Mirror uses reflection to create mocked responses, so Retrofit singleton class need to be in JAVA to work properly. No big problem at all. The other files are in Kotlin. UIAutomator its responsible for do orientation changes during the tests. Interceptor and OkHttp are used for logging the results of the API requests on Logcat.
   
   ```
-   // tests
-    testImplementation 'junit:junit:4.13'
+   /// tests
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     androidTestImplementation 'androidx.test:runner:1.3.0'
     androidTestImplementation 'androidx.test:rules:1.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.3.0'
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
-    androidTestImplementation "com.squareup.okhttp3:mockwebserver:4.9.0"
+    androidTestImplementation "com.squareup.okhttp3:mockwebserver:3.4.2" // SDk 16 support 3.4.2
     androidTestImplementation "net.vidageek:mirror:1.6.1"
-
-
-    //OkHttp
-    implementation ("com.squareup.okhttp3:okhttp:4.9.0"){
-        force = true //API 19 support
-    }
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
   ```
 
 
