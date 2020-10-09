@@ -10,9 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.cassio.cassiobookstore.mock.MY_MOCKS_BOOKS_LIST
-import com.cassio.cassiobookstore.mock.mockApiCallAfter
-import com.cassio.cassiobookstore.mock.mockApiCallBefore
-import com.cassio.cassiobookstore.mock.mockApiCallEnqueue
+import com.cassio.cassiobookstore.mock.MockApiCall
 import com.cassio.cassiobookstore.view.ItemListActivity
 import org.hamcrest.core.StringContains.containsString
 import org.junit.After
@@ -30,8 +28,8 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ClickMasterDetailTest {
 
-    private final val MILIS_DELAY: Long = 2000 // increase this for test with animation or slow devices (I recomend 2000)
-    private final val USE_MOCK_DATA: Boolean = true // change this to test with API or MockData
+    private final val MILIS_DELAY: Long =
+        2000 // increase this for test with animation or slow devices (I recomend 2000)
 
     @get:Rule
     var itemListRule: ActivityTestRule<ItemListActivity> =
@@ -39,31 +37,27 @@ class ClickMasterDetailTest {
 
     @Before
     fun shouldMockDataBefore() {
-        if (USE_MOCK_DATA)
-            mockApiCallBefore()
+        MockApiCall.mockApiCallBefore()
     }
 
     @After
     fun shouldMockDataAfter() {
-        if (USE_MOCK_DATA)
-            mockApiCallAfter()
+        MockApiCall.mockApiCallAfter()
     }
 
     @Test
     fun masterDetailSimpleTest() {
 
-        if (USE_MOCK_DATA) {
-            mockApiCallEnqueue(MY_MOCKS_BOOKS_LIST, 0)
-            itemListRule.launchActivity(Intent())
-        }
+        MockApiCall.mockApiCallEnqueue(MY_MOCKS_BOOKS_LIST, 1)
+        itemListRule.launchActivity(Intent())
 
-        Thread.sleep(2000)
+        Thread.sleep(MILIS_DELAY)
 
         onView(withText("Android Best Title Ever")).perform(click())
 
         onView(withId(R.id.item_detail))
             .check(matches(withText(containsString("Android is a movement that has transferred data from laptop to hand-held devices like mobiles."))))
 
-        Thread.sleep(5000)
+        Thread.sleep(MILIS_DELAY)
     }
 }

@@ -15,9 +15,7 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.UiDevice
 import com.cassio.cassiobookstore.mock.MY_MOCKS_BOOKS_LIST
-import com.cassio.cassiobookstore.mock.mockApiCallAfter
-import com.cassio.cassiobookstore.mock.mockApiCallBefore
-import com.cassio.cassiobookstore.mock.mockApiCallEnqueue
+import com.cassio.cassiobookstore.mock.MockApiCall
 import com.cassio.cassiobookstore.view.ItemListActivity
 import org.junit.After
 import org.junit.Before
@@ -57,20 +55,20 @@ class OrientationChangeAndLayoutTest {
     @Before
     fun shouldMockDataBefore() {
         if (USE_MOCK_DATA)
-            mockApiCallBefore()
+            MockApiCall.mockApiCallBefore()
     }
 
     @After
     fun shouldMockDataAfter() {
         if (USE_MOCK_DATA)
-            mockApiCallAfter()
+            MockApiCall.mockApiCallAfter()
     }
 
     @Test
     fun testOrientationChangesAtMainScreen() {
         
         if (USE_MOCK_DATA) {
-            mockApiCallEnqueue(MY_MOCKS_BOOKS_LIST, 50)
+            MockApiCall.mockApiCallEnqueue(MY_MOCKS_BOOKS_LIST, 50)
             itemListRule.launchActivity(Intent())
         }
 
