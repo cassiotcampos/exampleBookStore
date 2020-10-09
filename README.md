@@ -1,4 +1,11 @@
 # exampleBookStore
+
+## On tablets (portrait/landscape) and handphones on landscape
+![Image of App1](https://i.imgur.com/zJqNRR1m.jpg)  &nbsp;&nbsp;&nbsp; ![Image of App1](https://i.imgur.com/CnB1Km3m.jpg) 
+
+## Only handphones on portrait
+![Image of App1](https://i.imgur.com/S20GJ4im.jpg)  &nbsp;&nbsp;&nbsp; ![Image of App1](https://i.imgur.com/zWDgxvAm.jpg)
+
 ## A simple example to demonstrate part of my knowledge :coffee: :computer: :coffee: :iphone: :coffee: :sparkles:
 
 
