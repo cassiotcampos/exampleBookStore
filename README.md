@@ -45,3 +45,40 @@ Rest API: https://developers.google.com/books/docs/v1/getting_started#REST
   - [x] In the detail view, the user can also favorite or unfavorite a book. This option should be stored locally so it persists through each app usage.
   
   - [x] Clicking on the Buy link should open the link on browser.
+
+
+
+## Changelog
+  - Retrocompatibility
+    - **app (flavor normal)** minSdk changed from 21 to **16**
+    - **androidTest (flavor espressoTest)** minSdk changed from 21 to **19**. _(**UiAutomator** requires minSdk 19)_
+    - Product Flavors created to make everything more explicit
+
+app build.gradle:
+
+```
+    ...
+    productFlavors {
+
+        // App supports api 16
+        normal {
+            dimension "v1"
+        }
+
+        // Automated tests only works on API 19 and higher
+        espressoTest {
+            minSdkVersion 19
+        }
+    }
+    
+    ...
+    // SDK 16 support (do not update this)
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.4.2'
+    ...
+    // tests
+    ...
+    androidTestImplementation "com.squareup.okhttp3:mockwebserver:3.4.2" // SDk 16 support 3.4.2
+    ...
+```
