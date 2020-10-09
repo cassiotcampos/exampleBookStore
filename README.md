@@ -2,7 +2,7 @@
 ## A simple example to demonstrate part of my knowledge :coffee: :computer: :coffee: :iphone: :coffee: :sparkles:
 
 
-  - [x] Book Store consists on showing a simple 2-column list of available books about Android development. Using google’s api for books, the app should fetch and display the Thumbnail of a few books at a time and load more as the user scroll’s through the list. 
+  - [x] Book Store consists on showing a simple **2-column list of available books about Android development**. Using google’s api for books, the app should fetch and display the Thumbnail of a few books at a time and load more as the user scroll’s through the list. 
 Rest API: https://developers.google.com/books/docs/v1/getting_started#REST
 
   - [x] UI Tests with espresso. androidTest uses Mocked API throught MockWebServer and Mirror. Mirror uses reflection to create mocked responses, so Retrofit singleton class need to be in JAVA to work properly. No big problem at all. The other files are in Kotlin. UIAutomator its responsible for do orientation changes during the tests. Interceptor and OkHttp are used for logging the results of the API requests on Logcat.
