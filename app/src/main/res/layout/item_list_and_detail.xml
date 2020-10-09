@@ -40,14 +40,14 @@
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/item_list"
-                        android:name="com.br.cassio.cassiobookstore.ItemListFragment"
+                        android:name="com.cassio.cassiobookstore.ItemListFragment"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="1dp"
                         android:layout_marginRight="1dp"
                         android:background="@color/white_gray"
                         app:layoutManager="LinearLayoutManager"
-                        tools:context="com.br.cassio.cassiobookstore.ItemListActivity"
+                        tools:context="com.cassio.cassiobookstore.ItemListActivity"
                         tools:listitem="@layout/item_list_content" />
 
 

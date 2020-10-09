@@ -20,10 +20,9 @@ import java.io.IOException
  * (Mirror utiliza REFLECTION, por isso Retrofit esta em JAVA!!!)
  * --------------------------
  */
-lateinit var server: MockWebServer
+var server: MockWebServer = MockWebServer()
 
 fun mockApiCallBefore() {
-    server = MockWebServer()
     server.start(8080)
     setupServerUrl()
 }

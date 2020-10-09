@@ -1,4 +1,4 @@
-package com.br.cassio.cassiobookstore
+package com.cassio.cassiobookstore
 
 
 import android.content.Intent
@@ -9,7 +9,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import com.cassio.cassiobookstore.R
 import com.cassio.cassiobookstore.mock.MY_MOCKS_BOOKS_LIST
 import com.cassio.cassiobookstore.mock.mockApiCallAfter
 import com.cassio.cassiobookstore.mock.mockApiCallBefore
