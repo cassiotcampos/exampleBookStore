@@ -1,7 +1,8 @@
 package com.cassio.cassiobookstore
 
 import android.app.Application
-import android.os.Handler
+import android.content.Context
+import android.os.AsyncTask
 import com.bumptech.glide.Glide
 
 class App : Application() {
@@ -9,13 +10,16 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        if(BuildConfig.DEBUG) {
-            Runnable {
-                Handler().post(Runnable {
-                    Glide.get(this@App).clearMemory()
-                    Glide.get(this@App).clearMemory()
-                })
-            }.run()
+        // For purpose of better img tests
+        Glide.get(this@App).clearMemory()
+        clearGlide(this).execute()
+    }
+
+    class clearGlide(val mContext: Context) : AsyncTask<Void, Void, String>() {
+        @Override
+        override fun doInBackground(vararg params: Void?): String? {
+            Glide.get(mContext).clearDiskCache()
+            return null
         }
     }
 }

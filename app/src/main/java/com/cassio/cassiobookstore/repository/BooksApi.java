@@ -40,7 +40,7 @@ public final class BooksApi {
   }
 
   /**
-   * Get list of users in page passed as parameter
+   * Get list of books
    */
   public void getBooks(String q, int maxResults, Integer startIndex, Callback<Books> callback) {
     Call<Books> userResponsePage = api.getBooks(q, maxResults, startIndex, FIELDS);

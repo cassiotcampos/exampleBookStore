@@ -2,7 +2,6 @@ package com.cassio.cassiobookstore.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -15,7 +14,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.cassio.cassiobookstore.R
 import com.cassio.cassiobookstore.model.Books
 import com.cassio.cassiobookstore.model.Item
@@ -50,18 +48,9 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_item_list)
-
-
-        Runnable {
-            Handler().post(Runnable {
-                Glide.get(this@ItemListActivity).clearMemory()
-                Glide.get(this@ItemListActivity).clearMemory()
-            })
-        }.run()
-
-
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -115,23 +104,30 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
         val id = item.getItemId()
+
         if (id == R.id.action_favorite) {
+
             if (loadFavsFromShared(this).items.size > 0) {
+
                 val intent = Intent(baseContext, ItemListActivity::class.java)
                 intent.putExtra(extraFavKey, true)
                 startActivity(intent)
+
             }else {
+
                 Snackbar.make(
                     rvBooks,
                     getString(R.string.msg_no_favorites),
                     Snackbar.LENGTH_LONG
                 ).setAction("OK") {
-
                 }.show();
+
             }
             return true
         } else if (id == android.R.id.home) {
+
             onBackPressed()
         }
         return super.onOptionsItemSelected(item)

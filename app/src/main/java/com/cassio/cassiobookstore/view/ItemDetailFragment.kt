@@ -113,7 +113,7 @@ class ItemDetailFragment : Fragment() {
 
         // FAVORITE
         btnFav = rootView.findViewById<Button>(R.id.btn_adicionar_favorito)
-        myFavoriteBooks = loadFavsFromShared(context)
+        myFavoriteBooks = loadFavsFromShared(context!!)
         myFavoriteBooks?.items?.forEach meuLoop@{
             if (bookMaster.id.equals(it.id)) {
                 changeFavBtn(true)
@@ -167,7 +167,7 @@ class ItemDetailFragment : Fragment() {
     }
 
     fun addToFavorites(viewForSnackBar: View): Boolean {
-        var myFavs = loadFavsFromShared(context)
+        var myFavs = loadFavsFromShared(context!!)
         // verifica se ja existe
         myFavs?.items?.forEach() meuLoop@{
             if (it.id.equals(bookMaster.id)) {

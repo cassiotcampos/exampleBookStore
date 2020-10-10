@@ -11,12 +11,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.annotation.UiThread
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.Priority
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.cassio.cassiobookstore.R
@@ -101,13 +103,15 @@ class ListItemAdapter(
 
         private fun loadDefaultsImg() {
             this@BookViewHolder.imgbg?.setImageDrawable(ColorDrawable(ContextCompat.getColor(parentActivity.baseContext, R.color.colorPrimary)))
-            this@BookViewHolder.imgmini?.setImageDrawable(ContextCompat.getDrawable(parentActivity.baseContext, R.drawable.ic_livro))
+            this@BookViewHolder.imgmini?.setImageDrawable(ContextCompat.getDrawable(parentActivity.baseContext, R.drawable.ic_no_image_black))
+            this@BookViewHolder.imgmini?.setBackgroundColor(ContextCompat.getColor(parentActivity.baseContext, R.color.colorPrimary))
         }
 
         fun bind(item : Item) {
-            updateWithUrl(item)
+            this@BookViewHolder.imgmini?.setBackgroundColor(ContextCompat.getColor(parentActivity.baseContext, android.R.color.transparent))
             this@BookViewHolder.title?.text = item.volumeInfo.title
             this@BookViewHolder.containerButton?.setOnClickListener (onClickItem(item))
+            updateWithUrl(item)
         }
 
         private fun onClickItem(item: Item): View.OnClickListener? {
@@ -137,8 +141,7 @@ class ListItemAdapter(
             }
         }
 
-        @UiThread
-        fun updateWithUrl(item : Item) {
+        private fun updateWithUrl(item : Item) {
             item.volumeInfo.imageLinks?.smallThumbnail?.let {
                 loadFromUrl(it)
             } ?: loadDefaultsImg()
@@ -146,23 +149,31 @@ class ListItemAdapter(
 
         private fun loadFromUrl(url: String) {
             val myOptions = RequestOptions()
+                .priority(Priority.HIGH)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
 
             Glide.with(parentActivity)
                 .asBitmap()
+                .transition(BitmapTransitionOptions.withCrossFade())
                 .load(url.replace("http://", "https://"))
                 .apply(myOptions)
                 .into(object : SimpleTarget<Bitmap?>() {
 
-                    @UiThread
                     override fun onResourceReady(
                         resource: Bitmap,
                         transition: Transition<in Bitmap?>?
                     ) {
-                        this@BookViewHolder.imgmini?.setImageBitmap(resource)
-                        this@BookViewHolder.imgbg?.setImageBitmap(Bitmap.createScaledBitmap(resource, 3, 3, true))
+                        transition?.let {
+                            if (!transition.transition(Bitmap.createScaledBitmap(resource, 2, 12, true), BitmapImageViewTarget(this@BookViewHolder.imgbg)))
+                                this@BookViewHolder.imgbg?.setImageBitmap(Bitmap.createScaledBitmap(resource, 2, 12, true))
 
+                            if(! transition.transition(resource, BitmapImageViewTarget(this@BookViewHolder.imgmini)))
+                                this@BookViewHolder.imgmini?.setImageBitmap(resource)
 
+                        }
+
+                        // this@BookViewHolder.imgmini?.setImageBitmap(resource)
+                        // this@BookViewHolder.imgbg?.setImageBitmap(Bitmap.createScaledBitmap(resource, 3, 3, true))
                     }
                 })
         }

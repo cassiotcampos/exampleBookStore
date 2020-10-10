@@ -8,5 +8,5 @@
     android:layout_height="match_parent"
     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
     tools:context=".view.ItemListActivity"
-    android:background="@color/colorPrimary"
+    android:background="@color/grayDark"
     tools:listitem="@layout/item_list_content" />
