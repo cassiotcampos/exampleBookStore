@@ -145,8 +145,8 @@ class ItemDetailFragment : Fragment() {
             btnFav.setTextColor(activity?.resources?.getColor(R.color.white)!!)
         } else {
             btnFav.text = activity?.getText(R.string.add_favorite)
-            btnFav.setBackgroundColor(activity?.resources?.getColor(R.color.gray)!!)
-            btnFav.setTextColor(activity?.resources?.getColor(R.color.colorRed)!!)
+            btnFav.setBackgroundColor(activity?.resources?.getColor(R.color.grayDark)!!)
+            btnFav.setTextColor(activity?.resources?.getColor(R.color.white)!!)
         }
     }
 

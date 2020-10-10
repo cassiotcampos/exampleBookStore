@@ -29,12 +29,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:background="@color/white"
                     android:padding="0dp">
-                    <!--app:cardBackgroundColor="@android:color/background_light"
-                    app:cardCornerRadius="@dimen/cardCornerRadius"
-                    app:cardUseCompatPadding="true"
-                    app:elevation="4dp"-->
                     >
 
 
@@ -43,9 +38,7 @@
                         android:name="com.cassio.cassiobookstore.ItemListFragment"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="1dp"
-                        android:layout_marginRight="1dp"
-                        android:background="@color/white_gray"
+                        android:background="@color/grayDark"
                         app:layoutManager="LinearLayoutManager"
                         tools:context="com.cassio.cassiobookstore.ItemListActivity"
                         tools:listitem="@layout/item_list_content" />
@@ -61,7 +54,6 @@
                 android:id="@+id/my_divider"
                 android:layout_width="2dp"
                 android:layout_height="match_parent"
-                android:background="@color/my_background"
                 android:src="@android:drawable/arrow_down_float">
 
 
@@ -80,7 +72,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/white_gray"
+                android:background="@color/gray"
                 android:padding="0dp" />
 
 
@@ -92,7 +84,7 @@
             android:layout_width="@dimen/mFabArrowSize"
             android:layout_height="@dimen/mFabArrowSize"
             android:layout_centerInParent="true"
-            android:layout_marginStart="-33dp"
+            android:layout_marginLeft="-33dp"
             android:clickable="true"
             android:focusable="true"
             android:src="@drawable/ic_arrows_left"
