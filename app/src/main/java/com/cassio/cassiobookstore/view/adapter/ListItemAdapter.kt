@@ -136,7 +136,7 @@ class ListItemAdapter(
                     val intent = Intent(parentActivity, ItemDetailActivity::class.java).apply {
                         putExtra(ItemDetailFragment.ARG_BOOK, Gson().toJson(item))
                     }
-                    parentActivity.startActivity(intent)
+                    parentActivity.startActivityForResult(intent, ItemDetailFragment.REQUEST_VIEW_FAVORITE)
                 }
             }
         }
@@ -171,9 +171,6 @@ class ListItemAdapter(
                                 this@BookViewHolder.imgmini?.setImageBitmap(resource)
 
                         }
-
-                        // this@BookViewHolder.imgmini?.setImageBitmap(resource)
-                        // this@BookViewHolder.imgbg?.setImageBitmap(Bitmap.createScaledBitmap(resource, 3, 3, true))
                     }
                 })
         }

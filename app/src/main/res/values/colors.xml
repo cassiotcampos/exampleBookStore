@@ -4,7 +4,7 @@
     <color name="colorPrimaryTransparent">#45302F2F</color>
     <color name="colorPrimaryDark">#111111</color>
     <color name="colorPrimaryDarkTransparent">#90111111</color>
-    <color name="colorAccent">@color/colorPrimaryDarkTransparent</color>
+    <color name="colorAccent">@color/white_gray_transparent</color>
     <color name="my_background">#F4F4F4</color>
     <color name="white_gray">#F5F5F5</color>
     <color name="white">#ffffff</color>

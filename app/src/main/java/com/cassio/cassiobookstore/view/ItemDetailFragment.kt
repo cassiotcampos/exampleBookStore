@@ -31,7 +31,7 @@ class ItemDetailFragment : Fragment() {
     lateinit var bookMaster: Item
     var isFavorite: Boolean = false
 
-    private lateinit var btnFav : Button
+    private lateinit var btnFav: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -126,15 +126,35 @@ class ItemDetailFragment : Fragment() {
         }
 
         btnFav.setOnClickListener {
-            if (!isFavorite)
-                addToFavorites(rootView)
-            else
-                removeFavorite(rootView)
+            if (!isFavorite && (addToFavorites(rootView))) {
+                setActivityResultUnfavorited(false)
+            } else if (isFavorite && removeFavorite(rootView)) {
+                setActivityResultUnfavorited(true) // refresh the list after unfavorite
+            }
         }
 
 
 
         return rootView
+    }
+
+    // refresh the list removing the unfavorited title
+    // only for portrait flow
+    private fun setActivityResultUnfavorited(unfavorited: Boolean) {
+        if (isPortrait()) {
+
+            val act: ItemDetailActivity = activity as ItemDetailActivity
+
+            if (unfavorited) {
+                act.setActivityResultItemUnfavorited()
+            } else {
+                act.setActivityResultCanceled()
+            }
+        }
+    }
+
+    private fun isPortrait(): Boolean {
+        return activity is ItemDetailActivity
     }
 
     private fun changeFavBtn(isFav: Boolean) {
@@ -156,7 +176,7 @@ class ItemDetailFragment : Fragment() {
                 myFavoriteBooks.items.remove(it)
                 context?.let { itContext -> saveFavsIntoShared(itContext, myFavoriteBooks) }
                 mensagemRemovido(viewForSnackBar)
-                if(activity is ItemListActivity){
+                if (activity is ItemListActivity) {
                     (activity as ItemListActivity).favRemoved(bookMaster)
                 }
                 return true
@@ -172,7 +192,7 @@ class ItemDetailFragment : Fragment() {
         myFavs?.items?.forEach() meuLoop@{
             if (it.id.equals(bookMaster.id)) {
                 mensagemAdicionado(viewForSnackBar)
-                if(activity is ItemListActivity){
+                if (activity is ItemListActivity) {
                     (activity as ItemListActivity).favRemoved(bookMaster)
                 }
                 return true
@@ -183,7 +203,7 @@ class ItemDetailFragment : Fragment() {
         context?.let {
             if (saveFavsIntoShared(it, myFavoriteBooks)) {
                 mensagemAdicionado(viewForSnackBar)
-                if(activity is ItemListActivity){
+                if (activity is ItemListActivity) {
                     (activity as ItemListActivity).favReAdded(bookMaster)
                 }
                 return true
@@ -215,6 +235,8 @@ class ItemDetailFragment : Fragment() {
     }
 
     companion object {
+        const val RESULT_ITEM_ID_UNFAVORITED: String = "RESULT_UNFAVORITED_ID"
+        const val REQUEST_VIEW_FAVORITE: Int = 1
         const val ARG_BOOK = "book"
     }
 }

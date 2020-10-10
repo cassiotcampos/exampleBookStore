@@ -93,6 +93,12 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
         if (!isFav) loadFromApi() else loadFromDisk()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (isFav)
+            loadFromDisk()
+    }
+
     private fun loadFromDisk() {
         setupRecyclerView(loadFavsFromShared(this))
     }
@@ -115,7 +121,7 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
                 intent.putExtra(extraFavKey, true)
                 startActivity(intent)
 
-            }else {
+            } else {
 
                 Snackbar.make(
                     rvBooks,
@@ -198,6 +204,24 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
     fun favReAdded(item: Item) {
         if (isFav)
             (rvBooks.adapter as ListItemAdapter).addAll(arrayListOf(item))
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (isFav) {
+            if (requestCode == ItemDetailFragment.REQUEST_VIEW_FAVORITE) {
+                if (resultCode == RESULT_OK) {
+                    val unfavoritedId: String? =
+                        data?.getStringExtra(ItemDetailFragment.RESULT_ITEM_ID_UNFAVORITED)
+                    unfavoritedId.let {
+
+                        var dummyBook: Item = Item()
+                        dummyBook.id = it
+                        (rvBooks.adapter as ListItemAdapter).remove(dummyBook)
+                    }
+                }
+            }
+        }
     }
 }
 
