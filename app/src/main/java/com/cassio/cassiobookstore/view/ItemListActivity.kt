@@ -11,51 +11,56 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
-import androidx.core.widget.NestedScrollView
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cassio.cassiobookstore.R
+import com.cassio.cassiobookstore.databinding.ActivityItemListBinding
 import com.cassio.cassiobookstore.model.Books
 import com.cassio.cassiobookstore.model.Item
-import com.cassio.cassiobookstore.repository.BooksApi
-import com.cassio.cassiobookstore.repository.loadFavsFromShared
 import com.cassio.cassiobookstore.view.adapter.ListItemAdapter
+import com.cassio.cassiobookstore.viewmodel.BookListViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.google.gson.Gson
+import kotlinx.android.synthetic.main.item_list.view.*
+import org.koin.android.viewmodel.ext.android.viewModel
 
+interface LastBookBindedListener {
+    fun loadMoreBooks(item: Item?)
+}
 
-class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedListener {
+interface BookClickListener {
+    fun onBookClicked(item: Item)
+}
 
-    private final val extraFavKey: String = "EXTRA_FAV"
+class ItemListActivity : AppCompatActivity(), LastBookBindedListener, BookClickListener {
 
-    private lateinit var booksResult: Books
-    private val maxResults = 40
+    companion object {
+        const val ARG_IS_FAVORITES = "ARG_IS_FAVORITE"
+    }
 
-    private var twoPane: Boolean = false
+    private val vm: BookListViewModel by viewModel()
+
+    //-------------------- OLD IMPLEMENTATION
     private lateinit var fabArrowLeft: FloatingActionButton
     private lateinit var vDivider: View
     private lateinit var rvBooks: RecyclerView
     private lateinit var vContainerBooks: LinearLayout
 
-    private var apiIndex: Int = 0
-
-    val isFav: Boolean
-        get() {
-            return intent.getBooleanExtra(extraFavKey, false)
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_item_list)
+        val binding = ActivityItemListBinding.inflate(layoutInflater)
+        binding.viewModel = vm
+        val view = binding.root
+        setContentView(view)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        if (isFav) {
+        if (vm.isFav) {
             toolbar.setBackgroundColor(resources.getColor(R.color.colorRed))
             supportActionBar?.setHomeButtonEnabled(true);
             supportActionBar?.setDisplayHomeAsUpEnabled(true);
@@ -69,7 +74,43 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
             )
         }
 
-        rvBooks = findViewById(R.id.item_list)
+        // init adapter
+        val mRecyclerView : RecyclerView = binding.root.item_list
+
+        if (mRecyclerView.adapter == null) {
+
+            // init adapter
+            var emptyBooks = Books()
+            emptyBooks.items = arrayListOf()
+            val mAdapter : ListItemAdapter =
+                ListItemAdapter(MutableLiveData(emptyBooks), this, this, this)
+
+            mRecyclerView.layoutManager = GridLayoutManager(this, 2)
+            mRecyclerView.adapter = mAdapter
+
+            if(vm.allBooksLoaded?.items.isNullOrEmpty()) {
+                vm.loadBooks()
+            } else vm.allBooksLoaded?.items?.let { mAdapter.addAll(it) }
+        }
+
+        vm.lastBooksLoaded.observe(this, Observer {
+            // binding.root is the only way to get views from included/merged layouts
+            if (binding.root.item_list.adapter is ListItemAdapter) {
+                (binding.root.item_list.adapter as ListItemAdapter).addAll(it.items)
+            }
+        })
+
+        vm.showError.observe(this, {
+            Snackbar.make(
+                rvBooks, "Api error",
+                Snackbar.LENGTH_LONG
+            ).setAction("Try Again") {
+                vm.loadBooks()
+            }.show();
+        })
+
+
+        /*rvBooks = findViewById(R.id.item_list)
 
 
         if (findViewById<NestedScrollView>(R.id.item_detail_container) != null) {
@@ -82,30 +123,54 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
             fabArrowLeft.setOnClickListener {
                 if (vContainerBooks.visibility == View.GONE && twoPane) {
                     vContainerBooks.visibility = View.VISIBLE
-                    rotateFab(0f)
+                    //rotateFab(0f)
                 } else if (twoPane) {
                     vContainerBooks.visibility = View.GONE
-                    rotateFab(180f)
+                    //rotateFab(180f)
                 }
             }
+        }*/
+
+
+    }
+
+    private fun isTwoPane(): Boolean {
+        return this@ItemListActivity.findViewById<View>(R.id.item_detail_container_two_panel) != null
+    }
+
+    // called inside adapter when user scrolls to the end of the list
+    override fun loadMoreBooks(item: Item?) {
+        vm.loadBooks()
+    }
+
+    override fun onBookClicked(item: Item) {
+        if (isTwoPane()) {
+
+            // start fragment
+            val fragment = ItemDetailFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ItemDetailFragment.ARG_BOOK_DETAIL, Gson().toJson(item))
+                }
+            }
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.item_detail_container_two_panel, fragment)
+                .commit()
+
+        } else {
+
+            // start activity
+            val intent = Intent(this, ItemDetailActivity::class.java).apply {
+                putExtra(ItemDetailFragment.ARG_BOOK_DETAIL, Gson().toJson(item))
+            }
+            startActivityForResult(intent, ItemDetailFragment.REQUEST_VIEW_FAVORITE)
         }
-
-        if (!isFav) loadFromApi() else loadFromDisk()
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (isFav)
-            loadFromDisk()
-    }
-
-    private fun loadFromDisk() {
-        setupRecyclerView(loadFavsFromShared(this))
-    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.actions, menu)
-        if (!isFav) menu.findItem(R.id.action_favorite).isVisible = true
+        if (!vm.isFav) menu.findItem(R.id.action_favorite).isVisible = true
         return true
     }
 
@@ -115,10 +180,9 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
 
         if (id == R.id.action_favorite) {
 
-            if (loadFavsFromShared(this).items.size > 0) {
-
+            if (vm.loadFavorites().items.size > 0) {
                 val intent = Intent(baseContext, ItemListActivity::class.java)
-                intent.putExtra(extraFavKey, true)
+                intent.putExtra(ItemListActivity.ARG_IS_FAVORITES, true)
                 startActivity(intent)
 
             } else {
@@ -145,58 +209,8 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
             .setInterpolator(interpolator).setStartDelay(500).start()
     }
 
-    private fun setupRecyclerView(tempResult: Books) {
-        booksResult = tempResult
 
-        rvBooks.apply {
-            rvBooks.layoutManager = GridLayoutManager(this@ItemListActivity, 2)
-            rvBooks.adapter =
-                ListItemAdapter(this@ItemListActivity, booksResult, twoPane, this@ItemListActivity)
-        }
-    }
-
-    private fun loadFromApi() {
-
-        BooksApi.getInstance()
-            .getBooks(
-                "android",
-                maxResults,
-                apiIndex,
-                (object : Callback<Books> {
-                    override fun onResponse(call: Call<Books>?, response: Response<Books>?) {
-
-                        if (response != null) {
-                            val tempResult: Books = response.body()!!
-                            if (tempResult.items != null) {
-                                if (apiIndex == 0) {
-                                    setupRecyclerView(tempResult)
-                                } else {
-                                    val mAdapter = rvBooks.adapter as ListItemAdapter
-                                    mAdapter.addAll(tempResult.items)
-                                }
-                                apiIndex += maxResults
-                            }
-                        }
-                    }
-
-                    override fun onFailure(call: Call<Books>?, t: Throwable?) {
-                        Snackbar.make(
-                            rvBooks, "Api error",
-                            Snackbar.LENGTH_LONG
-                        ).setAction("Try Again") {
-                            loadFromApi()
-                        }.show();
-                    }
-                })
-            )
-    }
-
-    override fun onLastItemLoaded() {
-        if (!isFav)
-            loadFromApi()
-    }
-
-    fun favRemoved(item: Item) {
+    /*fun favRemoved(item: Item) {
         if (isFav)
             (rvBooks.adapter as ListItemAdapter).remove(item)
     }
@@ -204,11 +218,11 @@ class ItemListActivity : AppCompatActivity(), ListItemAdapter.LastItemLoadedList
     fun favReAdded(item: Item) {
         if (isFav)
             (rvBooks.adapter as ListItemAdapter).addAll(arrayListOf(item))
-    }
+    }*/
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (isFav) {
+        if (vm.isFav) {
             if (requestCode == ItemDetailFragment.REQUEST_VIEW_FAVORITE) {
                 if (resultCode == RESULT_OK) {
                     val unfavoritedId: String? =

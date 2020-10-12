@@ -2,27 +2,19 @@ package com.cassio.cassiobookstore.view
 
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
-import com.bumptech.glide.Priority
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.BitmapImageViewTarget
-import com.bumptech.glide.request.target.SimpleTarget
-import com.bumptech.glide.request.transition.Transition
 import com.cassio.cassiobookstore.R
 import com.cassio.cassiobookstore.model.Item
+import com.cassio.cassiobookstore.view.util.Utils
 import com.google.gson.Gson
 
 
 class ItemDetailActivity : AppCompatActivity() {
 
-    lateinit var item : Item
+    lateinit var item: Item
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +26,7 @@ class ItemDetailActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
 
             item = Gson().fromJson(
-                intent.getStringExtra(ItemDetailFragment.ARG_BOOK),
+                intent.getStringExtra(ItemDetailFragment.ARG_BOOK_DETAIL),
                 Item::class.java
             )
 
@@ -43,9 +35,9 @@ class ItemDetailActivity : AppCompatActivity() {
                 replaceFragment()
             } ?: onBackPressed()
 
-        }else {
+        } else {
             item = Gson().fromJson(
-                savedInstanceState.getString(ItemDetailFragment.ARG_BOOK),
+                savedInstanceState.getString(ItemDetailFragment.ARG_BOOK_DETAIL),
                 Item::class.java
             )
             loadContent()
@@ -57,14 +49,14 @@ class ItemDetailActivity : AppCompatActivity() {
         val fragment = ItemDetailFragment().apply {
             arguments = Bundle().apply {
                 putString(
-                    ItemDetailFragment.ARG_BOOK,
-                    intent.getStringExtra(ItemDetailFragment.ARG_BOOK)
+                    ItemDetailFragment.ARG_BOOK_DETAIL,
+                    intent.getStringExtra(ItemDetailFragment.ARG_BOOK_DETAIL)
                 )
             }
         }
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.item_detail_container, fragment)
+            .replace(R.id.item_detail_container_handphone, fragment)
             .commit()
     }
 
@@ -72,61 +64,23 @@ class ItemDetailActivity : AppCompatActivity() {
         val fragment = ItemDetailFragment().apply {
             arguments = Bundle().apply {
                 putString(
-                    ItemDetailFragment.ARG_BOOK,
-                    intent.getStringExtra(ItemDetailFragment.ARG_BOOK)
+                    ItemDetailFragment.ARG_BOOK_DETAIL,
+                    intent.getStringExtra(ItemDetailFragment.ARG_BOOK_DETAIL)
                 )
             }
         }
 
         supportFragmentManager.beginTransaction()
-            .add(R.id.item_detail_container, fragment)
+            .add(R.id.item_detail_container_two_panel, fragment)
             .commit()
     }
 
     private fun loadContent() {
         item.let {
-
             supportActionBar?.title = item?.volumeInfo?.title
-
-
-            val myOptions = RequestOptions()
-                .priority(Priority.HIGH)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-
-            Glide.with(this)
-                .asBitmap()
-                .transition(BitmapTransitionOptions.withCrossFade())
-                .load(it?.volumeInfo?.imageLinks?.smallThumbnail?.replace("http://", "https://"))
-                .apply(myOptions)
-                .into(object : SimpleTarget<Bitmap?>() {
-
-                    override fun onResourceReady(
-                        resource: Bitmap,
-                        transition: Transition<in Bitmap?>?
-                    ) {
-                        var img = findViewById<ImageView>(R.id.img_toolbar_bg)
-                        transition?.let {
-                            if (!transition.transition(
-                                    Bitmap.createScaledBitmap(
-                                        resource,
-                                        2,
-                                        12,
-                                        true
-                                    ), BitmapImageViewTarget(img)
-                                )
-                            )
-                                img?.setImageBitmap(
-                                    Bitmap.createScaledBitmap(
-                                        resource,
-                                        2,
-                                        12,
-                                        true
-                                    )
-                                )
-
-                        }
-                    }
-                })
+            Utils.loadBlurriedImg(this,
+                it?.volumeInfo?.imageLinks?.smallThumbnail?.replace("http://", "https://"),
+                findViewById<ImageView>(R.id.img_toolbar_bg))
         }
     }
 
@@ -142,7 +96,7 @@ class ItemDetailActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         item.volumeInfo?.let {
-            outState.putString(ItemDetailFragment.ARG_BOOK, Gson().toJson(item))
+            outState.putString(ItemDetailFragment.ARG_BOOK_DETAIL, Gson().toJson(item))
         }
 
     }

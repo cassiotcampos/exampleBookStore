@@ -1,30 +1,29 @@
 package com.cassio.cassiobookstore.view
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.core.text.HtmlCompat
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
-import com.bumptech.glide.Priority
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import com.cassio.cassiobookstore.R
+import com.cassio.cassiobookstore.databinding.ItemDetailBinding
 import com.cassio.cassiobookstore.model.Books
 import com.cassio.cassiobookstore.model.Item
-import com.cassio.cassiobookstore.repository.loadFavsFromShared
-import com.cassio.cassiobookstore.repository.saveFavsIntoShared
+import com.cassio.cassiobookstore.viewmodel.BookDetailViewModel
 import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
+import org.koin.android.viewmodel.ext.android.viewModel
+
 
 class ItemDetailFragment : Fragment() {
+
+    companion object{
+        const val ARG_BOOK_DETAIL = "ARG_BOOK_DETAIL"
+        const val REQUEST_VIEW_FAVORITE = 1
+        const val RESULT_ITEM_ID_UNFAVORITED = "RESULT_ITEM_ID_UNFAVORITED"
+    }
 
     private lateinit var myFavoriteBooks: Books
     private var bookStr: String? = null
@@ -33,13 +32,17 @@ class ItemDetailFragment : Fragment() {
 
     private lateinit var btnFav: Button
 
+    private val vm: BookDetailViewModel by viewModel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            if (it.containsKey(ARG_BOOK)) {
-                bookStr = it.getString(ARG_BOOK)
+            if (it.containsKey(ARG_BOOK_DETAIL)) {
+                bookStr = it.getString(ARG_BOOK_DETAIL)
                 bookMaster = Gson().fromJson(bookStr, Item::class.java)
+
+                vm.bookDetail = bookMaster
 
                 // ACTIONBAR TITLE
                 var toolBar = activity?.findViewById<CollapsingToolbarLayout>(R.id.toolbar_layout)
@@ -52,7 +55,16 @@ class ItemDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.item_detail, container, false)
+
+        val binding:  ItemDetailBinding = DataBindingUtil.inflate(
+            layoutInflater, R.layout.item_detail, container, false
+        )
+        val view : View = binding.root
+        binding.bookViewModel = vm
+
+        return view
+
+        /*val rootView = inflater.inflate(R.layout.item_detail, container, false)
 
         // TITLE
         bookMaster.volumeInfo?.title?.let {
@@ -114,7 +126,7 @@ class ItemDetailFragment : Fragment() {
         // FAVORITE
         btnFav = rootView.findViewById<Button>(R.id.btn_adicionar_favorito)
         myFavoriteBooks = loadFavsFromShared(context!!)
-        myFavoriteBooks?.items?.forEach meuLoop@{
+        myFavoriteBooks.items?.forEach meuLoop@{
             if (bookMaster.id.equals(it.id)) {
                 changeFavBtn(true)
                 return@meuLoop
@@ -123,19 +135,19 @@ class ItemDetailFragment : Fragment() {
 
         if (!isFavorite) {
             changeFavBtn(false)
-        }
-
+        }*/
+/*
         btnFav.setOnClickListener {
             if (!isFavorite && (addToFavorites(rootView))) {
                 setActivityResultUnfavorited(false)
             } else if (isFavorite && removeFavorite(rootView)) {
                 setActivityResultUnfavorited(true) // refresh the list after unfavorite
             }
-        }
+        }*/
 
 
 
-        return rootView
+        // return rootView
     }
 
     // refresh the list removing the unfavorited title
@@ -145,11 +157,11 @@ class ItemDetailFragment : Fragment() {
 
             val act: ItemDetailActivity = activity as ItemDetailActivity
 
-            if (unfavorited) {
+           /* if (unfavorited) {
                 act.setActivityResultItemUnfavorited()
             } else {
                 act.setActivityResultCanceled()
-            }
+            }*/
         }
     }
 
@@ -170,7 +182,7 @@ class ItemDetailFragment : Fragment() {
         }
     }
 
-    private fun removeFavorite(viewForSnackBar: View): Boolean {
+   /* private fun removeFavorite(viewForSnackBar: View): Boolean {
         myFavoriteBooks.items.forEach meuLoop@{
             if (it.id.equals(bookMaster.id)) {
                 myFavoriteBooks.items.remove(it)
@@ -238,5 +250,5 @@ class ItemDetailFragment : Fragment() {
         const val RESULT_ITEM_ID_UNFAVORITED: String = "RESULT_UNFAVORITED_ID"
         const val REQUEST_VIEW_FAVORITE: Int = 1
         const val ARG_BOOK = "book"
-    }
+    }*/
 }

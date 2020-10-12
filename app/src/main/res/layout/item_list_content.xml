@@ -1,56 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_gravity="center"
-    android:orientation="vertical"
-    android:paddingLeft="0dp"
-    android:paddingTop="0dp"
-    android:paddingRight="1px"
-    android:paddingBottom="1px">
+    tools:context="com.cassio.cassiobookstore.view.ItemListActivity">
+
+    <data>
+
+        <variable
+            name="bookRow"
+            type="com.cassio.cassiobookstore.model.Item" />
+
+        <variable
+            name="clickListeners"
+            type="com.cassio.cassiobookstore.view.BookClickListener" />
 
 
-    <ImageView
-        android:id="@+id/imgbg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
-        android:scaleType="centerCrop" />
+    </data>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimaryTransparent" />
-
-    <LinearLayout
-        android:id="@+id/container_book_button"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="75dp"
-        android:layout_gravity="center_vertical"
-        android:background="@drawable/my_ripple"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="1px"
+        android:paddingBottom="1px">
+
+
+        <ImageView
+            android:id="@+id/imgbg"
+            android:layout_width="match_parent"
+            android:layout_height="600dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/colorPrimary"
+            android:scaleType="centerCrop"
+            app:loadImageBg="@{bookRow.volumeInfo.imageLinks.smallThumbnail}" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimaryTransparent" />
+
+        <LinearLayout
+            android:id="@+id/container_book_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/my_ripple"
+            android:gravity="center_vertical"
+            android:onClick="@{() -> clickListeners.onBookClicked(bookRow)}"
+            android:orientation="horizontal">
 
             <FrameLayout
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:maxHeight="75dp"
-                android:minHeight="60dp">
+                android:minHeight="60dp"
+                android:background="@color/colorPrimaryDarkTransparent">
 
                 <TextView
-                    android:text="Loading\n"
-                    android:gravity="center"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:layout_gravity="center"
-                    android:textStyle="bold"
+                    android:gravity="center"
                     android:letterSpacing="-.09"
                     android:lineSpacingMultiplier="0.4"
+                    android:text="Loading\n"
                     android:textColor="@color/grayDark"
                     android:textSize="14dp"
-                    android:visibility="visible" >
+                    android:textStyle="bold"
+                    android:visibility="visible">
 
                 </TextView>
 
@@ -58,49 +78,36 @@
                     android:id="@+id/imgmini"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
-                    android:minHeight="60dp"
                     android:layout_gravity="center"
-                    android:background="@color/colorPrimary"
                     android:layout_marginLeft="0dp"
+                    android:background="@color/transparent"
                     android:maxHeight="75dp"
+                    android:minHeight="60dp"
                     android:scaleType="fitCenter"
                     android:textAppearance="?attr/textAppearanceListItem"
-                    tools:src="@drawable/ic_no_image_white"
-                    tools:background="@android:color/transparent"/>
+                    app:loadImgUrl="@{bookRow.volumeInfo.imageLinks.smallThumbnail}" />
 
             </FrameLayout>
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
 
 
-            <TextView
-                android:id="@+id/books_title"
-                style="?android:attr/textAppearanceLarge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|left"
-                android:alpha=".9"
-                android:gravity="left"
-                android:letterSpacing="-0.05"
-                android:lineSpacingMultiplier=".75"
-                android:maxLines="4"
-                android:ellipsize="end"
-                android:paddingLeft="6dp"
-                android:paddingTop="2dp"
-                android:paddingRight="6dp"
-                android:paddingBottom="4dp"
-                android:text="Testandoaso asdasdasd asdasdad Testandoaso asdasdasd asdasdad Testandoaso asdasdasd asdasdad Testandoaso asdasdasd asdasdad Testandoaso asdasdasd asdasdad Testandoaso asdasdasd asdasdad "
-                android:textColor="@color/white"
-                android:textSize="18sp" />
+                <TextView
+                    android:id="@+id/books_title"
+                    android:layout_gravity="center_vertical"
+                    style="@style/text_view_row_book"
+                    android:text="@{bookRow.volumeInfo.title}"
+                    tools:text="Melhor Livro de Android de todos os tempos. Realmente Imperdível. Volume 3 Melhor Livro de Android de todos os tempos. Realmente Imperdível. Volume 3 Melhor Livro de Android de todos os tempos. Realmente Imperdível. Volume 3 " />
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
-
-
-    </LinearLayout>
-
-</FrameLayout>
+    </FrameLayout>
+</layout>

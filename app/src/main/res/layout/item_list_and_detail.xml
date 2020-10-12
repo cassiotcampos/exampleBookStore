@@ -1,17 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="viewModel"
+            type="com.cassio.cassiobookstore.viewmodel.BookListViewModel" />
+    </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:animateLayoutChanges="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
             android:background="@color/my_background"
             android:baselineAligned="false"
             android:orientation="horizontal"
@@ -65,10 +69,8 @@
 
             </FrameLayout>
 
-
-
             <FrameLayout
-                android:id="@+id/item_detail_container"
+                android:id="@+id/item_detail_container_two_panel"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -92,11 +94,9 @@
             app:fabCustomSize="@dimen/mFabArrowSize"
             app:layout_anchor="@id/my_divider"
             app:layout_anchorGravity="center"
-            app:maxImageSize="11dp"/>
+            app:maxImageSize="11dp" />
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-
-
-</merge>
+</layout>

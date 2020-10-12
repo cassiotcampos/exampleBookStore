@@ -3,7 +3,7 @@
     <color name="colorPrimary">#353535</color>
     <color name="colorPrimaryTransparent">#45302F2F</color>
     <color name="colorPrimaryDark">#111111</color>
-    <color name="colorPrimaryDarkTransparent">#90111111</color>
+    <color name="colorPrimaryDarkTransparent">#AA111111</color>
     <color name="colorAccent">@color/white_gray_transparent</color>
     <color name="my_background">#F4F4F4</color>
     <color name="white_gray">#F5F5F5</color>
@@ -13,5 +13,6 @@
     <color name="colorRed">#910D01</color>
     <color name="grayDark">#444444</color>
     <color name="white_gray_transparent">#80F5F5F5</color>
+    <color name="transparent">#00000000</color>
 
 </resources>
