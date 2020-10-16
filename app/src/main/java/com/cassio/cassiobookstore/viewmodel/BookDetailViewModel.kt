@@ -2,108 +2,71 @@ package com.cassio.cassiobookstore.viewmodel
 
 import android.app.Application
 import android.text.Spanned
-import android.view.View
-import android.widget.ImageView
-import androidx.core.text.HtmlCompat
-import androidx.databinding.BindingAdapter
-import com.cassio.cassiobookstore.model.Item
+import androidx.lifecycle.MutableLiveData
+import com.cassio.cassiobookstore.model.dto.BookDTO
+import com.cassio.cassiobookstore.model.vo.BookVO
 import com.cassio.cassiobookstore.repository.SharedP
+import com.cassio.cassiobookstore.viewmodel.util.SingleLiveEvent
 
 
 class BookDetailViewModel(
     application: Application,
-    sharedP: SharedP,
-) : BookBaseViewModel(application, sharedP) {
+    private val sharedP: SharedP,
+) : BookBaseViewModel(application, sharedP) , IBookDetailViewModel {
 
-    var bookDetail: Item = Item()
+    val bookVO =
+        MutableLiveData<BookVO>().apply { value = BookVO(BookDTO()) }
 
-    fun getTitle() : String {
-        bookDetail.volumeInfo?.title?.let {
-            return it
-        } ?: return ""
+
+    val onClickBuyLink = SingleLiveEvent<String>()
+    val isFav = MutableLiveData<Boolean>()
+
+    fun setBookDetail(mBook: BookVO) {
+        bookVO.value = mBook
+        isFav.value = sharedP.isFav(bookVO.value!!.getBookDTO())
+        isFav.postValue(isFav.value)
     }
 
-    fun getThumbUrl() : String?{
-        return bookDetail.volumeInfo?.imageLinks?.smallThumbnail
-    }
+    override fun onClickBuyLink() {
 
-    fun getAuthorVisibility() : Int {
-        if(isAuthorAvailable()) return View.VISIBLE
-        return View.GONE
-    }
-
-    fun getAuthorText(): String {
-        var authorsDescription = ""
-        bookDetail.volumeInfo?.authors?.forEach {
-            authorsDescription += it + ", "
-        }
-        authorsDescription = authorsDescription.dropLast(2)
-        authorsDescription += "."
-        return authorsDescription
-    }
-
-    fun getBookDescription(): Spanned {
-        if (!bookDetail.volumeInfo.description.isNullOrEmpty()) {
-            return HtmlCompat.fromHtml(
-                bookDetail.volumeInfo.description,
-                HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
-        } else if (bookDetail.searchInfo != null && !bookDetail.searchInfo.textSnippet.isNullOrEmpty()) {
-            return HtmlCompat.fromHtml(
-                bookDetail.searchInfo.textSnippet,
-                HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
-        }
-        return HtmlCompat.fromHtml("Description not available", HtmlCompat.FROM_HTML_MODE_LEGACY)
-    }
-
-    fun getBuyLinkVisibility() : Int{
-        return getVisibility(isBuyLinkAvailable())
-    }
-
-    private fun getVisibility(isAvailable: Boolean): Int {
-        if(isAvailable) return View.VISIBLE
-        return View.GONE
-    }
-
-    fun getBuyLink(): Spanned {
-        if(isBuyLinkAvailable()) {
-            val buyLink = bookDetail.saleInfo?.buyLink
-            return HtmlCompat.fromHtml("<u>$buyLink</u>", HtmlCompat.FROM_HTML_MODE_LEGACY)
-        }else{
-            return HtmlCompat.fromHtml("Not available", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        if (bookVO.value!!.isBuyLinkAvailable()) {
+            onClickBuyLink.postValue(bookVO.value!!.getBuyLink())
         }
     }
 
-    private fun isBuyLinkAvailable(): Boolean {
-        bookDetail.saleInfo?.buyLink?.let {
-            return true
-        } ?: return false
+    override fun getThumbUrl(): String {
+        return bookVO.value!!.getThumbUrl()
     }
 
-    private fun isAuthorAvailable(): Boolean {
-        return !bookDetail.volumeInfo?.authors.isNullOrEmpty()
+    override fun getBookDescription(): Spanned {
+        return bookVO.value!!.getBookDescription()
     }
 
-    companion object {
-
-        @JvmStatic
-        @BindingAdapter("loadImageThumb")
-        fun loadImageThumb(imgView: ImageView, url: String?) {
-
-            if (url != null) {
-                BookListViewModel.loadThumbFromUrl(imgView, url)
-            } else {
-                BookListViewModel.loadThumbDefault(imgView)
-            }
+    override fun onClickFav() {
+        val newFavValue = isFav.value?.not()
+        if (newFavValue != null) {
+            sharedP.addOrRemoveFav(newFavValue, bookVO.value!!.getBookDTO())
+            isFav.postValue(newFavValue)
         }
     }
 
-    /*fun onClickBuyLink(){
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.data = Uri.parse(buyLink.replace("http://", "https://"))
-        startActivity(intent)
-    }*/
+    override fun getTitle(): String {
+        return bookVO.value!!.getTitle()
+    }
 
+    override fun getAuthorVisibility() : Int {
+        return bookVO.value!!.getAuthorVisibility()
+    }
 
+    override fun getAuthorText(): String {
+        return bookVO.value!!.getAuthorText()
+    }
+
+    override fun getBuyLinkVisibility() : Int {
+        return bookVO.value!!.getBuyLinkVisibility()
+    }
+
+    override fun getBuyLink(): Spanned {
+        return bookVO.value!!.getBuyLinkFormattedSpanned()
+    }
 }

@@ -4,18 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="com.cassio.cassiobookstore.viewmodel.BookListViewModel" />
+
+        <import type="com.cassio.cassiobookstore.viewmodel.BookListViewModelBase" />
+
         <variable
             name="viewModel"
-            type="com.cassio.cassiobookstore.viewmodel.BookListViewModel" />
+            type="com.cassio.cassiobookstore.viewmodel.BookListViewModelBase" />
     </data>
+
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include layout="@layout/item_list_and_detail"
-            app:viewModel="@{((BookListViewModel) viewModel)}"/>
+        <include layout="@layout/item_list_and_detail" />
 
     </FrameLayout>
 </layout>

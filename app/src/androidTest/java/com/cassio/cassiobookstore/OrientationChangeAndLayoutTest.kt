@@ -16,7 +16,7 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.UiDevice
 import com.cassio.cassiobookstore.mock.MY_MOCKS_BOOKS_LIST
 import com.cassio.cassiobookstore.mock.MockApiCall
-import com.cassio.cassiobookstore.view.ItemListActivity
+import com.cassio.cassiobookstore.view.activity.ItemListActivityBase
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -48,8 +48,8 @@ class OrientationChangeAndLayoutTest {
     private val device = UiDevice.getInstance(getInstrumentation())
 
     @get:Rule
-    var itemListRule: ActivityTestRule<ItemListActivity> =
-        ActivityTestRule(ItemListActivity::class.java)
+    var itemListRuleBase: ActivityTestRule<ItemListActivityBase> =
+        ActivityTestRule(ItemListActivityBase::class.java)
 
 
     @Before
@@ -69,14 +69,14 @@ class OrientationChangeAndLayoutTest {
         
         if (USE_MOCK_DATA) {
             MockApiCall.mockApiCallEnqueue(MY_MOCKS_BOOKS_LIST, 50)
-            itemListRule.launchActivity(Intent())
+            itemListRuleBase.launchActivity(Intent())
         }
 
         device.setOrientationNatural()
         Thread.sleep(MILIS_DELAY)
 
         // handphone (telemovel)
-        if (!isTablet(itemListRule.activity)) {
+        if (!isTablet(itemListRuleBase.activity)) {
             // this object make orientation changes during the test
             testHandphoneOrientationChangesAtMainScreenAndCheckLayoutChanges()
         } else {
@@ -98,7 +98,7 @@ class OrientationChangeAndLayoutTest {
         // these views only exists after change to landscape
         onView(withId(R.id.item_list_container))
             .check(doesNotExist())
-        onView(withId(R.id.item_detail_container))
+        onView(withId(R.id.item_detail_container_two_panel))
             .check(doesNotExist())
 
         // change to landscape
@@ -107,7 +107,7 @@ class OrientationChangeAndLayoutTest {
 
         onView(withId(R.id.item_list_container))
             .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
-        onView(withId(R.id.item_detail_container))
+        onView(withId(R.id.item_detail_container_two_panel))
             .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
 
         // checking landscape collapse of the list
@@ -126,7 +126,7 @@ class OrientationChangeAndLayoutTest {
             .check(doesNotExist())
         onView(withId(R.id.item_list_container))
             .check(doesNotExist())
-        onView(withId(R.id.item_detail_container))
+        onView(withId(R.id.item_detail_container_two_panel))
             .check(doesNotExist())
 
     }
@@ -143,7 +143,7 @@ class OrientationChangeAndLayoutTest {
             .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
         onView(withId(R.id.item_list_container))
             .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
-        onView(withId(R.id.item_detail_container))
+        onView(withId(R.id.item_detail_container_two_panel))
             .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
 
         device.setOrientationLeft()
@@ -158,7 +158,7 @@ class OrientationChangeAndLayoutTest {
             .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
         onView(withId(R.id.item_list_container))
             .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
-        onView(withId(R.id.item_detail_container))
+        onView(withId(R.id.item_detail_container_two_panel))
             .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
 
         device.setOrientationNatural()
@@ -168,7 +168,7 @@ class OrientationChangeAndLayoutTest {
             .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
         onView(withId(R.id.item_list_container))
             .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
-        onView(withId(R.id.item_detail_container))
+        onView(withId(R.id.item_detail_container_two_panel))
             .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
     }
 

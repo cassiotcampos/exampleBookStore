@@ -1,20 +1,11 @@
 package com.cassio.cassiobookstore.viewmodel
 
 import android.app.Application
-import android.widget.ImageView
-import androidx.core.content.ContextCompat
-import androidx.databinding.BindingAdapter
-import androidx.databinding.ObservableBoolean
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.bumptech.glide.Glide
-import com.bumptech.glide.Priority
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
-import com.cassio.cassiobookstore.R
-import com.cassio.cassiobookstore.model.Books
+import com.cassio.cassiobookstore.model.dto.BookListDTO
 import com.cassio.cassiobookstore.repository.BooksApi
 import com.cassio.cassiobookstore.repository.SharedP
-import com.cassio.cassiobookstore.view.util.Utils
 import com.cassio.cassiobookstore.viewmodel.util.SingleLiveEvent
 import retrofit2.Call
 import retrofit2.Callback
@@ -23,35 +14,25 @@ import retrofit2.Response
 
 class BookListViewModel(
     application: Application,
-    sharedP: SharedP,
+    private val sharedP: SharedP,
     private val booksApi: BooksApi,
-) : BookBaseViewModel(application, sharedP) {
+) : BookListViewModelBase(application, sharedP) {
 
     private var apiIndex: Int = 0
-    private val maxResults = 40
-    val isFav: Boolean = false
+    private val maxResults = 10
 
-    val showError = SingleLiveEvent<String>()
-    val showLoading: ObservableBoolean = ObservableBoolean(false)
-
-    val lastBooksLoaded = MutableLiveData<Books>()
-    var allBooksLoaded: Books = Books()
+    private val _lastLoadedBooks = MutableLiveData<BookListDTO>()
+    val lastLoadedBooks : LiveData<BookListDTO> = _lastLoadedBooks
 
     init {
-        allBooksLoaded.items = arrayListOf()
+        loadBooks()
     }
 
-    fun loadBooks() {
-        showLoading.set(true)
-        if (!isFav) loadFromApi() else loadFavoritesFromSharedP()
-    }
+    val showError = SingleLiveEvent<String>()
+    val hasFavorites = MutableLiveData<Boolean>()
 
-    private fun loadFavoritesFromSharedP() {
-        lastBooksLoaded.value = loadFavorites()
-        allBooksLoaded = lastBooksLoaded.value!!
-    }
 
-    private fun loadFromApi() {
+    override fun loadBooks() {
 
         booksApi
             .getBooks(
@@ -62,13 +43,13 @@ class BookListViewModel(
             )
     }
 
-    private fun callbackGetBooks(): Callback<Books>? {
-        return (object : Callback<Books> {
-            override fun onResponse(call: Call<Books>?, response: Response<Books>?) {
+    private fun callbackGetBooks(): Callback<BookListDTO>? {
+        return (object : Callback<BookListDTO> {
+            override fun onResponse(call: Call<BookListDTO>?, response: Response<BookListDTO>?) {
                 onResponseSuccessBooks(response)
             }
 
-            override fun onFailure(call: Call<Books>?, t: Throwable?) {
+            override fun onFailure(call: Call<BookListDTO>?, t: Throwable?) {
                 onResponseFailureBooks()
             }
         })
@@ -78,97 +59,30 @@ class BookListViewModel(
         showError.postValue("Api error")
     }
 
-    private fun onResponseSuccessBooks(response: Response<Books>?) {
+    private fun onResponseSuccessBooks(response: Response<BookListDTO>?) {
 
         if (response != null) {
 
-            val tempResult: Books = response.body()!!
+            var tempResult: BookListDTO? = response.body()
 
-            if (tempResult.items != null) {
+            if (tempResult?.bookDTOS.isNullOrEmpty().not()) {
 
                 apiIndex += maxResults
 
-                if (allBooksLoaded?.items.isNullOrEmpty()) {
-                    allBooksLoaded = tempResult
-                } else {
-                    allBooksLoaded?.items?.addAll(tempResult.items)
-                }
+                _lastLoadedBooks.value = tempResult
 
-                // notify UI
-                lastBooksLoaded.postValue(tempResult)
+                if (_myBooks.value == null) {
+                    _myBooks.value = tempResult
+                } else {
+                    _myBooks.value?.bookDTOS?.addAll(tempResult!!.bookDTOS)
+                }
             }
         }
     }
 
-
-    companion object {
-
-        @JvmStatic
-        @BindingAdapter("loadImgUrl")
-        fun loadImageThumb(imgView: ImageView, url: String?) {
-
-            if (url != null) {
-                loadThumbFromUrl(imgView, url)
-            } else {
-                loadThumbDefault(imgView)
-            }
-        }
-
-        @JvmStatic
-        @BindingAdapter("loadImageBg")
-        fun loadImageBg(imgView: ImageView, url: String?) {
-
-            if (url != null) {
-                loadBackgroundFromUrl(imgView, url)
-            } else {
-                loadBackgroundDefault(imgView)
-            }
-        }
-
-        fun loadThumbDefault(imgView: ImageView) {
-            imgView.setImageDrawable(
-                ContextCompat.getDrawable(
-                    imgView.context,
-                    R.drawable.ic_no_image_black
-                )
-            )
-
-            imgView.setBackgroundColor(
-                ContextCompat.getColor(
-                    imgView.context,
-                    R.color.colorPrimaryDark
-                )
-            )
-        }
-
-        fun loadBackgroundDefault(imgView: ImageView) {
-            imgView.setImageDrawable(
-                ContextCompat.getDrawable(
-                    imgView.context,
-                    R.color.colorPrimaryDark
-                )
-            )
-        }
-
-        fun loadBackgroundFromUrl(imgBg: ImageView, url: String) {
-
-            Utils.loadBlurriedImg(imgBg.context,
-                url.replace("http://", "https://"),
-            imgBg)
-        }
-
-        fun loadThumbFromUrl(imgView: ImageView, url: String) {
-
-            imgView.setBackgroundColor(ContextCompat.getColor(imgView.context, R.color.transparent))
-
-            val myOptions = RequestOptions()
-                .priority(Priority.HIGH)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-
-            Glide.with(imgView.rootView.context) // at least the row context for correct centerCrop
-                .load(url.replace("http://", "https://"))
-                .apply(myOptions)
-                .into(imgView)
+    fun verifyIfHasFavorites() {
+        if (hasFavorites.value != sharedP.hasFavorites()) {
+            hasFavorites.value = sharedP.hasFavorites()
         }
     }
 }

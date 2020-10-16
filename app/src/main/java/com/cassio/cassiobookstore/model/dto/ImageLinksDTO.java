@@ -1,10 +1,9 @@
 
-package com.cassio.cassiobookstore.model;
+package com.cassio.cassiobookstore.model.dto;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ImageLinks {
+public class ImageLinksDTO {
 
     @SerializedName("smallThumbnail")
 

@@ -1,6 +1,6 @@
 package com.cassio.cassiobookstore.repository
 
-import com.cassio.cassiobookstore.model.Books
+import com.cassio.cassiobookstore.model.dto.BookListDTO
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -14,6 +14,6 @@ interface ApiInterface {
         @Query("startIndex") startIndex: Int,
         @Query("fields") fields : String
 
-    ): Call<Books>
+    ): Call<BookListDTO>
 
 }

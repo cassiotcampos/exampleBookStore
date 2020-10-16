@@ -1,4 +1,4 @@
-package com.cassio.cassiobookstore.view
+package com.cassio.cassiobookstore.view.activity
 
 
 import android.content.Intent
@@ -6,15 +6,17 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Priority
 import com.cassio.cassiobookstore.R
-import com.cassio.cassiobookstore.model.Item
-import com.cassio.cassiobookstore.view.util.Utils
+import com.cassio.cassiobookstore.model.vo.BookVO
+import com.cassio.cassiobookstore.view.ImageUtils
+import com.cassio.cassiobookstore.view.fragment.ItemDetailFragment
 import com.google.gson.Gson
 
 
 class ItemDetailActivity : AppCompatActivity() {
 
-    lateinit var item: Item
+    var bookVO: BookVO? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,20 +27,20 @@ class ItemDetailActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
 
-            item = Gson().fromJson(
+            bookVO = Gson().fromJson(
                 intent.getStringExtra(ItemDetailFragment.ARG_BOOK_DETAIL),
-                Item::class.java
+                BookVO::class.java
             )
 
-            item.let {
+            bookVO?.let {
                 loadContent()
                 replaceFragment()
             } ?: onBackPressed()
 
         } else {
-            item = Gson().fromJson(
+            bookVO = Gson().fromJson(
                 savedInstanceState.getString(ItemDetailFragment.ARG_BOOK_DETAIL),
-                Item::class.java
+                BookVO::class.java
             )
             loadContent()
             replaceFragment()
@@ -60,28 +62,18 @@ class ItemDetailActivity : AppCompatActivity() {
             .commit()
     }
 
-    private fun addFragment() {
-        val fragment = ItemDetailFragment().apply {
-            arguments = Bundle().apply {
-                putString(
-                    ItemDetailFragment.ARG_BOOK_DETAIL,
-                    intent.getStringExtra(ItemDetailFragment.ARG_BOOK_DETAIL)
-                )
-            }
-        }
-
-        supportFragmentManager.beginTransaction()
-            .add(R.id.item_detail_container_two_panel, fragment)
-            .commit()
-    }
-
     private fun loadContent() {
-        item.let {
-            supportActionBar?.title = item?.volumeInfo?.title
-            Utils.loadBlurriedImg(this,
-                it?.volumeInfo?.imageLinks?.smallThumbnail?.replace("http://", "https://"),
-                findViewById<ImageView>(R.id.img_toolbar_bg))
-        }
+
+        supportActionBar?.title = bookVO?.getTitle()
+
+        ImageUtils.loadImgFromUrl(
+            this,
+            bookVO?.getThumbUrl()!!,
+            findViewById<ImageView>(R.id.img_toolbar_bg),
+            Priority.IMMEDIATE,
+            withBlurryEffect = true
+        )
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem) =
@@ -95,15 +87,15 @@ class ItemDetailActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        item.volumeInfo?.let {
-            outState.putString(ItemDetailFragment.ARG_BOOK_DETAIL, Gson().toJson(item))
+        bookVO?.let {
+            outState.putString(ItemDetailFragment.ARG_BOOK_DETAIL, Gson().toJson(bookVO))
         }
 
     }
 
     fun setActivityResultItemUnfavorited() {
         val data = Intent()
-        data.putExtra(ItemDetailFragment.RESULT_ITEM_ID_UNFAVORITED, item.id)
+        data.putExtra(ItemDetailFragment.RESULT_ITEM_ID_UNFAVORITED, bookVO?.getId())
         setResult(RESULT_OK, data)
     }
 

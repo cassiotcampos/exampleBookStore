@@ -1,8 +1,8 @@
-package com.cassio.cassiobookstore.model;
+package com.cassio.cassiobookstore.model.dto;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SearchInfo {
+public class SearchInfoDTO {
 
     @SerializedName("textSnippet")
     private String textSnippet;

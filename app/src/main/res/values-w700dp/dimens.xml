@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_left_only_two_panel">8dp</dimen>
+    <dimen name="text_item_list_size">18sp</dimen>
+    <dimen name="text_base">18sp</dimen>
+    <dimen name="text_label_small_base">14sp</dimen>
+
+    <dimen name="detail_thumb_width">180dp</dimen>
+    <dimen name="detail_thumb_height">232dp</dimen>
+</resources>

@@ -1,9 +1,9 @@
 
-package com.cassio.cassiobookstore.model;
+package com.cassio.cassiobookstore.model.dto;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Item {
+public class BookDTO {
 
     @SerializedName("kind")
     private String kind;
@@ -18,28 +18,28 @@ public class Item {
     private String selfLink;
 
     @SerializedName("volumeInfo")
-    private VolumeInfo volumeInfo;
+    private VolumeInfoDTO volumeInfoDTO;
 
     @SerializedName("searchInfo")
-    private SearchInfo searchInfo;
+    private SearchInfoDTO searchInfoDTO;
 
     @SerializedName("saleInfo")
-    private SaleInfo saleInfo;
+    private SaleInfoDTO saleInfoDTO;
 
-    public SaleInfo getSaleInfo() {
-        return saleInfo;
+    public SaleInfoDTO getSaleInfoDTO() {
+        return saleInfoDTO;
     }
 
-    public void setSaleInfo(SaleInfo saleInfo) {
-        this.saleInfo = saleInfo;
+    public void setSaleInfoDTO(SaleInfoDTO saleInfoDTO) {
+        this.saleInfoDTO = saleInfoDTO;
     }
 
-    public SearchInfo getSearchInfo() {
-        return searchInfo;
+    public SearchInfoDTO getSearchInfoDTO() {
+        return searchInfoDTO;
     }
 
-    public void setSearchInfo(SearchInfo searchInfo) {
-        this.searchInfo = searchInfo;
+    public void setSearchInfoDTO(SearchInfoDTO searchInfoDTO) {
+        this.searchInfoDTO = searchInfoDTO;
     }
 
     public String getKind() {
@@ -74,11 +74,11 @@ public class Item {
         this.selfLink = selfLink;
     }
 
-    public VolumeInfo getVolumeInfo() {
-        return volumeInfo;
+    public VolumeInfoDTO getVolumeInfoDTO() {
+        return volumeInfoDTO;
     }
 
-    public void setVolumeInfo(VolumeInfo volumeInfo) {
-        this.volumeInfo = volumeInfo;
+    public void setVolumeInfoDTO(VolumeInfoDTO volumeInfoDTO) {
+        this.volumeInfoDTO = volumeInfoDTO;
     }
 }

@@ -1,11 +1,11 @@
 
-package com.cassio.cassiobookstore.model;
-
-import java.util.List;
+package com.cassio.cassiobookstore.model.dto;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Books {
+import java.util.List;
+
+public class BookListDTO {
 
     @SerializedName("kind")
 
@@ -15,7 +15,7 @@ public class Books {
     private Integer totalItems;
     @SerializedName("items")
 
-    private List<Item> items = null;
+    private List<BookDTO> bookDTOS = null;
 
     public String getKind() {
         return kind;
@@ -33,12 +33,12 @@ public class Books {
         this.totalItems = totalItems;
     }
 
-    public List<Item> getItems() {
-        return items;
+    public List<BookDTO> getBookDTOS() {
+        return bookDTOS;
     }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
+    public void setBookDTOS(List<BookDTO> bookDTOS) {
+        this.bookDTOS = bookDTOS;
     }
 
 }

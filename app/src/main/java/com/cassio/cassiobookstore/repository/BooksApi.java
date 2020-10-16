@@ -2,7 +2,7 @@ package com.cassio.cassiobookstore.repository;
 
 
 import com.cassio.cassiobookstore.BuildConfig;
-import com.cassio.cassiobookstore.model.Books;
+import com.cassio.cassiobookstore.model.dto.BookListDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -15,50 +15,50 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public final class BooksApi {
 
-  public static final String BASE_URL = "https://www.googleapis.com/books/v1/";
+    public static final String BASE_URL = "https://www.googleapis.com/books/v1/";
 
-  public static final String FIELDS = "kind,items(id,volumeInfo/title,volumeInfo/authors,volumeInfo/publisher,volumeInfo/publishedDate,volumeInfo/description,volumeInfo/imageLinks(smallThumbnail)searchInfo(textSnippet),saleInfo/buyLink)";
+    public static final String FIELDS = "kind,items(id,volumeInfo/title,volumeInfo/authors,volumeInfo/publisher,volumeInfo/publishedDate,volumeInfo/description,volumeInfo/imageLinks(smallThumbnail)searchInfo(textSnippet),saleInfo/buyLink)";
 
-  public static final Gson GSON = new GsonBuilder()
-      .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SS'Z'")
-      .create();
+    public static final Gson GSON = new GsonBuilder()
+            .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SS'Z'")
+            .create();
 
-  private ApiInterface api;
+    private ApiInterface api;
 
-  private static BooksApi INSTANCE;
+    private static BooksApi INSTANCE;
 
-  /**
-   * Sets up the singleton instance
-   *
-   * @return Singleton instance
-   */
-  public static BooksApi getInstance() {
-    if (INSTANCE == null) {
-      INSTANCE = new BooksApi();
+    /**
+     * Sets up the singleton instance
+     *
+     * @return Singleton instance
+     */
+    public static BooksApi getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new BooksApi();
+        }
+        return INSTANCE;
     }
-    return INSTANCE;
-  }
 
-  /**
-   * Get list of books
-   */
-  public void getBooks(String q, int maxResults, Integer startIndex, Callback<Books> callback) {
-    Call<Books> userResponsePage = api.getBooks(q, maxResults, startIndex, FIELDS);
-    userResponsePage.enqueue(callback);
-  }
+    /**
+     * Get list of books
+     */
+    public void getBooks(String q, int maxResults, Integer startIndex, Callback<BookListDTO> callback) {
+        Call<BookListDTO> userResponsePage = api.getBooks(q, maxResults, startIndex, FIELDS);
+        userResponsePage.enqueue(callback);
+    }
 
-  private BooksApi() {
-    HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-    interceptor.setLevel(BuildConfig.DEBUG ?
-        HttpLoggingInterceptor.Level.BODY :
-        HttpLoggingInterceptor.Level.NONE);
-    OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+    private BooksApi() {
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(BuildConfig.DEBUG ?
+                HttpLoggingInterceptor.Level.BODY :
+                HttpLoggingInterceptor.Level.NONE);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 
-    api = new Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create(GSON))
-        .client(client)
-        .build()
-        .create(ApiInterface.class);
-  }
+        api = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(GSON))
+                .client(client)
+                .build()
+                .create(ApiInterface.class);
+    }
 }

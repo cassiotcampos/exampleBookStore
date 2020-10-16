@@ -1,8 +1,8 @@
-package com.cassio.cassiobookstore.model;
+package com.cassio.cassiobookstore.model.dto;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SaleInfo {
+public class SaleInfoDTO {
 
     @SerializedName("buyLink")
     private String buyLink;

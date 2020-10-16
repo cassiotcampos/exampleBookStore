@@ -2,5 +2,12 @@
 <resources>
     <dimen name="app_bar_height">200dp</dimen>
     <dimen name="mFabArrowSize">40dp</dimen>
-    <dimen name="margin_left_only_landscape">0dp</dimen>
+    <dimen name="margin_left_only_two_panel">0dp</dimen>
+
+    <dimen name="text_item_list_size">14sp</dimen>
+    <dimen name="detail_thumb_width">120dp</dimen>
+    <dimen name="detail_thumb_height">155dp</dimen>
+
+    <dimen name="text_base">14sp</dimen>
+    <dimen name="text_label_small_base">11sp</dimen>
 </resources>

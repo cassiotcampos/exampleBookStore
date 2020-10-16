@@ -1,11 +1,11 @@
 
-package com.cassio.cassiobookstore.model;
+package com.cassio.cassiobookstore.model.dto;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class VolumeInfo {
+public class VolumeInfoDTO {
 
     @SerializedName("title")
     private String title;
@@ -16,7 +16,7 @@ public class VolumeInfo {
     @SerializedName("publishedDate")
     private String publishedDate;
     @SerializedName("imageLinks")
-    private ImageLinks imageLinks;
+    private ImageLinksDTO imageLinksDTO;
     @SerializedName("description")
     private String description;
 
@@ -60,11 +60,11 @@ public class VolumeInfo {
         this.publishedDate = publishedDate;
     }
 
-    public ImageLinks getImageLinks() {
-        return imageLinks;
+    public ImageLinksDTO getImageLinksDTO() {
+        return imageLinksDTO;
     }
 
-    public void setImageLinks(ImageLinks imageLinks) {
-        this.imageLinks = imageLinks;
+    public void setImageLinksDTO(ImageLinksDTO imageLinksDTO) {
+        this.imageLinksDTO = imageLinksDTO;
     }
 }

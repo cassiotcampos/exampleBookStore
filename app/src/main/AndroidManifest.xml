@@ -22,7 +22,7 @@
             android:resource="@menu/actions" />
 
         <activity
-            android:name=".view.ItemListActivity"
+            android:name=".view.activity.ItemListActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -32,13 +32,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.ItemDetailActivity"
+            android:name=".view.activity.ItemDetailActivity"
             android:label="@string/title_item_detail"
-            android:parentActivityName=".view.ItemListActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.cassio.cassiobookstore.view.ItemListActivity" />
+        </activity>
+        <activity
+            android:name=".view.activity.ItemListFavoritesActivity"
+            android:label="@string/title_item_detail"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 

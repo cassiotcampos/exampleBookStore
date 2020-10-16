@@ -4,9 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
         <data>
+            <import type="com.cassio.cassiobookstore.viewmodel.BookListViewModelBase" />
+
             <variable
                 name="viewModel"
-                type="com.cassio.cassiobookstore.viewmodel.BookListViewModel" />
+                type="com.cassio.cassiobookstore.viewmodel.BookListViewModelBase" />
         </data>
 
     <androidx.recyclerview.widget.RecyclerView

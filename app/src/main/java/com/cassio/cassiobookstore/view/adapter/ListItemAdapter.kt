@@ -1,23 +1,29 @@
 package com.cassio.cassiobookstore.view.adapter
 
 
+import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.MutableLiveData
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Priority
+import com.cassio.cassiobookstore.R
 import com.cassio.cassiobookstore.databinding.ItemListContentBinding
-import com.cassio.cassiobookstore.model.Books
-import com.cassio.cassiobookstore.model.Item
-import com.cassio.cassiobookstore.view.BookClickListener
-import com.cassio.cassiobookstore.view.LastBookBindedListener
+import com.cassio.cassiobookstore.model.dto.BookDTO
+import com.cassio.cassiobookstore.model.dto.BookListDTO
+import com.cassio.cassiobookstore.model.vo.BookVO
+import com.cassio.cassiobookstore.view.ImageUtils
+import com.cassio.cassiobookstore.view.activity.BookClickListener
+import com.cassio.cassiobookstore.view.activity.LastBookBindedListener
 import com.cassio.cassiobookstore.view.adapter.ListItemAdapter.BookViewHolder
 
 class ListItemAdapter(
-    private val mBooks: MutableLiveData<Books>,
-    private val lifecycleOwner: LifecycleOwner,
-    val lastBookBindedListener: LastBookBindedListener,
-    val onBookClickListener: BookClickListener
+    val context: Context,
+    private var mBookListDTO: BookListDTO,
+    private val lastBookBindedListener: LastBookBindedListener,
+    private val onBookClickListener: BookClickListener
 ) : RecyclerView.Adapter<BookViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
@@ -25,19 +31,20 @@ class ListItemAdapter(
         val binding: ItemListContentBinding =
             ItemListContentBinding.inflate(inflater, parent, false)
 
-        binding.lifecycleOwner = this@ListItemAdapter.lifecycleOwner
         binding.clickListeners = onBookClickListener
 
         return BookViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
-        holder.bind(position)
+        holder.bind(BookVO(mBookListDTO?.bookDTOS?.get(position)!!))
+        if(mBookListDTO?.bookDTOS?.size?.minus(1) == position){
+            lastBookBindedListener.loadMoreBooks()
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
-        // previne RV de reciclar novas views com informacoes de outras
-        if (mBooks.value?.items?.get(position) is Item) {
+        if (mBookListDTO?.bookDTOS?.get(position) is BookDTO) {
             return position
         } else {
             return -1
@@ -45,69 +52,78 @@ class ListItemAdapter(
     }
 
     override fun getItemCount(): Int {
-        mBooks.value?.items?.size?.let {
+        mBookListDTO?.bookDTOS?.size?.let {
             return it
         } ?: return 0
     }
 
 
+    fun addAll(mBookDTOS: MutableList<BookDTO>) {
 
-    fun addAll(mItems: MutableList<Item>) {
+        val positionStart = mBookDTOS.size + mBookListDTO!!.bookDTOS.size
+        val itensToBeAdded = mBookDTOS.size
 
-
-        val positionStart = mItems.size + mBooks.value!!.items.size
-        val itensToBeAdded = mItems.size
-
-        mBooks.value!!.items.addAll(mItems)
+        mBookListDTO!!.bookDTOS.addAll(mBookDTOS)
         notifyItemRangeInserted(positionStart, itensToBeAdded)
     }
 
-    fun remove(mItem: Item) {
+    fun remove(mBookDTO: BookDTO) {
         var positionToBeRemoved: Int = 0
-        for (i in 0 until mBooks.value!!.items.size) {
-            if (mBooks.value!!.items[i].id.equals(mItem.id)) {
+        for (i in 0 until mBookListDTO!!.bookDTOS.size) {
+            if (mBookListDTO!!.bookDTOS[i].id.equals(mBookDTO.id)) {
                 positionToBeRemoved = i
             }
         }
-        mBooks.value!!.items.removeAt(positionToBeRemoved);
+        mBookListDTO!!.bookDTOS.removeAt(positionToBeRemoved);
         notifyItemRemoved(positionToBeRemoved)
     }
 
     inner class BookViewHolder(val viewBinding: ItemListContentBinding) :
         RecyclerView.ViewHolder(viewBinding.root) {
 
-        fun bind(position: Int) {
+        fun bind(bookVO : BookVO) {
+            viewBinding.bookVO = bookVO
+            var imgThumb: ImageView = viewBinding.root.findViewById(R.id.imgmini)
+            var imgBg: ImageView = viewBinding.root.findViewById(R.id.imgbg)
 
-            //viewBinding.setLifecycleOwner(lifecycleOwner);
-
-            val row = mBooks.value!!.items[position]
-            viewBinding.bookRow = row
-
-            if (position == mBooks.value?.items?.size?.minus(1)) {
-                lastBookBindedListener.loadMoreBooks(row)
+            if (!bookVO.isThumbAvailable()) {
+                loadDefaultsImg(imgThumb, imgBg)
+            } else {
+                ImageUtils.loadImgAndBgFromUrlWithOneRequest(
+                    context,
+                    bookVO.getThumbUrl(),
+                    targetImgViewThumb = imgThumb,
+                    targetImgViewBg = imgBg,
+                    withTransition = true,
+                    priority = Priority.IMMEDIATE
+                )
             }
 
-            //viewBinding.executePendingBindings();
+            /*if (position == mBooks.value?.items?.size?.minus(1)) {
+                lastBookBindedListener.loadMoreBooks()
+            }*/
         }
 
-        /*private fun loadDefaultsImg() {
-            this@BookViewHolder.imgbg?.setImageDrawable(
+        private fun loadDefaultsImg(imgThumb : ImageView, imgBg : ImageView) {
+            imgBg.setImageDrawable(
                 ColorDrawable(
                     ContextCompat.getColor(
-                        parentActivity.baseContext,
+                        context,
                         R.color.colorPrimary
                     )
                 )
             )
 
-            this@BookViewHolder.imgmini?.setBackgroundColor(
+            imgThumb.setBackgroundColor(
                 ContextCompat.getColor(
-                    parentActivity.baseContext,
+                    context,
                     R.color.colorPrimary
                 )
             )
-        }
 
+            imgThumb.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_no_image_white))
+        }
+/*
         fun bind(item: Item) {
             this@BookViewHolder.imgmini?.setBackgroundColor(
                 ContextCompat.getColor(
@@ -159,5 +175,5 @@ class ListItemAdapter(
         private fun loadFromUrl(url: String) {
 
         }*/
+        }
     }
-}

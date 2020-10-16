@@ -5,6 +5,7 @@ import android.content.Context
 import com.cassio.cassiobookstore.repository.BooksApi
 import com.cassio.cassiobookstore.repository.SharedP
 import com.cassio.cassiobookstore.viewmodel.BookDetailViewModel
+import com.cassio.cassiobookstore.viewmodel.BookListFavoritesViewModel
 import com.cassio.cassiobookstore.viewmodel.BookListViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
@@ -26,6 +27,10 @@ val booksApiModule = module {
     }
 
     viewModel {
+        BookListFavoritesViewModel(androidApplication(), get())
+    }
+
+    viewModel {
         BookDetailViewModel(androidApplication(), get())
     }
 }
@@ -37,6 +42,3 @@ fun provideBooksApi(): BooksApi? {
 fun provideSharedPref(context: Context): SharedP {
     return SharedP(context)
 }
-
-
-
